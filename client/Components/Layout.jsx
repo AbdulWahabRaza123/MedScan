@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Row, Col, Image } from "react-bootstrap";
+import { Row, Col, Image, Container } from "react-bootstrap";
 export const ImageComp = (props) => {
   return (
     <>
@@ -12,4 +12,4 @@ export const ImageComp = (props) => {
     </>
   );
 };
-export { Row, Col };
+export { Row, Col, Container };

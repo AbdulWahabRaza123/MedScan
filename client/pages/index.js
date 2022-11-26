@@ -1,7 +1,7 @@
 import NavbarComp from "../Components/Navbar";
 import { useState, useEffect } from "react";
 
-const index = () => {
+const Home = () => {
   const [mount, setMount] = useState(false);
   useEffect(() => {
     setMount(true);
@@ -9,10 +9,34 @@ const index = () => {
   return mount ? (
     <>
       <NavbarComp />
+
+      <h1>Hello World</h1>
+      <br />
+      <h1>Hello World</h1>
+      <br />
+      <h1>Hello World</h1>
+      <br />
+      <h1>Hello World</h1>
+      <br />
+      <h1>Hello World</h1>
+      <br />
+      <h1>Hello World</h1>
+      <br />
+      <h1>Hello World</h1>
+      <br />
+      <h1>Hello World</h1>
+      <br />
+      <h1>Hello World</h1>
+      <br />
+      <h1>Hello World</h1>
+      <br />
+      <h1>Hello World</h1>
+      <br />
+      <h1>Hello World</h1>
     </>
   ) : (
     <></>
   );
 };
 
-export default index;
+export default Home;
