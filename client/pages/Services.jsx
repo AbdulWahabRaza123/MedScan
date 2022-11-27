@@ -8,7 +8,9 @@ const Services = () => {
   }, []);
   return mount ? (
     <>
-      <NavbarComp />
+      <NavbarComp title="Services" />
+      {/* <h1>Hello World</h1>
+      <NavbarComp/> */}
     </>
   ) : (
     <></>

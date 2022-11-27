@@ -5,6 +5,12 @@ import { ImageComp, Container } from "./Layout";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import HomeIcon from "@mui/icons-material/Home";
+import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import CallIcon from "@mui/icons-material/Call";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
+import AddIcon from "@mui/icons-material/Add";
 const NavLogoStyle = {
   width: "70px",
   height: "70px",
@@ -16,6 +22,7 @@ const BorderBottom = styled.div`
   box-shadow: 0px 4px 3px gray;
   position: fixed;
   width: 100%;
+  z-index: 100;
 `;
 const A = styled.a`
   cursor: pointer;
@@ -34,13 +41,20 @@ const NavLink = styled.p`
     margin-left: 25px;
   }
 `;
-const NavbarComp = () => {
+const NavbarComp = (props) => {
   const router = useRouter();
-  const pages = ["Home", "Services", "About", "Contact", "How to use"];
+  const pages = [
+    { name: "Home", icon: HomeIcon },
+    { name: "Services", icon: SettingsSuggestIcon },
+    { name: "About", icon: AutoAwesomeIcon },
+    { name: "Contact", icon: CallIcon },
+    { name: "Login", icon: LockOpenIcon },
+    { name: "Signup", icon: AddIcon },
+  ];
   return (
     <>
       <Head>
-        <title>Home</title>
+        <title>{props.title}</title>
       </Head>
       <BorderBottom>
         <Navbar bg="white" expand="lg">
@@ -64,19 +78,25 @@ const NavbarComp = () => {
                     <>
                       <NavLink key={id}>
                         <Link
-                          href={`/${name === "Home" ? "" : name}`}
+                          href={`/${name.name === "Home" ? "" : name.name}`}
                           style={{ textDecoration: "none" }}
                         >
                           <A
                             active={
-                              router.pathname === "/" + name
+                              router.pathname === "/" + name.name
                                 ? "active"
-                                : router.pathname === "/" && name === "Home"
+                                : router.pathname === "/" &&
+                                  name.name === "Home"
                                 ? "active"
                                 : ""
                             }
                           >
-                            {name}
+                            <name.icon
+                              style={{
+                                marginTop: "-6px",
+                              }}
+                            />
+                            {name.name}
                           </A>
                         </Link>
                       </NavLink>
