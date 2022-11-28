@@ -17,7 +17,6 @@ const BorderTop = styled.div`
   -webkit-box-shadow: 0px -4px 3px rgba(50, 50, 50, 0.75);
   -moz-box-shadow: 0px -4px 3px rgba(50, 50, 50, 0.75);
   box-shadow: 0px -4px 3px rgba(50, 50, 50, 0.75);
-
   background-color: #27262c;
   color: white;
   font-weight: 700;
@@ -46,6 +45,9 @@ const FooterLink = styled.p`
     margin-left: 25px;
   }
 `;
+// const Relative = styled.div`
+//   position: relative;
+// `;
 const FooterIcon = styled.div`
   display: flex;
   flex-direction: row;

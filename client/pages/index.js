@@ -64,6 +64,7 @@ const Home = () => {
       <Container>
         <Section2 className="text-center">
           <h1>How to Use?</h1>
+          <p>Please Suggest something to put here</p>
         </Section2>
       </Container>
       <Footer />
