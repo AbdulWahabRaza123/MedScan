@@ -13,6 +13,8 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 const BorderTop = styled.div`
+  position: relative;
+  bottom: 0;
   border-top: 0.01px solid black;
   -webkit-box-shadow: 0px -4px 3px rgba(50, 50, 50, 0.75);
   -moz-box-shadow: 0px -4px 3px rgba(50, 50, 50, 0.75);
@@ -82,7 +84,6 @@ const Footer = () => {
     <>
       <br />
       <br />
-
       <BorderTop>
         <Container>
           <LinksStyle>
