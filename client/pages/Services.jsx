@@ -4,13 +4,20 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 import CardComp from "../Components/Card";
 import { Container, Row, Col } from "../Components/Layout";
+import Footer from "../Components/Footer";
 const Services = () => {
   const [mount, setMount] = useState(false);
   useEffect(() => {
     setMount(true);
   }, []);
   const ServicesStyle = styled.div`
-    margin-top: 10%;
+    margin-top: 18vh;
+    margin-bottom: 5%;
+    ${
+      "" /* @media screen and (max-width: 753px) {
+      margin-top: 15vh;
+    } */
+    }
   `;
   return mount ? (
     <>
@@ -24,6 +31,7 @@ const Services = () => {
           </Row>
         </ServicesStyle>
       </Container>
+      <Footer />
     </>
   ) : (
     <></>

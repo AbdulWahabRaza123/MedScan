@@ -4,7 +4,24 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-
+import { Col } from "./Layout";
+export const ContactCard = (props) => {
+  return (
+    <>
+      <Col md={4} className="mt-5">
+        <props.icon
+          className="mt-1 mb-2"
+          style={{ color: "gray", fontSize: "30px" }}
+        />
+        <h4>{props.title}</h4>
+        <p>
+          <b className="me-2">{props.title}:</b>
+          {props.content}
+        </p>
+      </Col>
+    </>
+  );
+};
 const CardComp = () => {
   return (
     <>
@@ -26,7 +43,9 @@ const CardComp = () => {
           </Typography>
         </CardContent>
         <CardActions>
-          <Button size="small">Check</Button>
+          <Button size="small">
+            <b>Go</b>
+          </Button>
           <Button size="small">Learn More</Button>
         </CardActions>
       </Card>
