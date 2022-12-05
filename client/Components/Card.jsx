@@ -1,9 +1,10 @@
-import Card from "@mui/material/Card";
+import MaterialCard from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import Card from "react-bootstrap/Card";
 import { Col } from "./Layout";
 export const ContactCard = (props) => {
   return (
@@ -25,7 +26,7 @@ export const ContactCard = (props) => {
 const CardComp = () => {
   return (
     <>
-      <Card sx={{ maxWidth: 345 }}>
+      <MaterialCard sx={{ maxWidth: 345 }}>
         <CardMedia
           component="img"
           alt="green iguana"
@@ -48,9 +49,25 @@ const CardComp = () => {
           </Button>
           <Button size="small">Learn More</Button>
         </CardActions>
+      </MaterialCard>
+    </>
+  );
+};
+const StepsCard = (props) => {
+  return (
+    <>
+      <Card
+        className="mt-4"
+        border={props.color}
+        style={{ width: "100%", height: "150px", overflow: "auto" }}
+      >
+        <Card.Body>
+          <Card.Title>{props.title}</Card.Title>
+          <Card.Text>{props.description}</Card.Text>
+        </Card.Body>
       </Card>
     </>
   );
 };
-
+export { StepsCard };
 export default CardComp;

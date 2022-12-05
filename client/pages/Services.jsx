@@ -13,10 +13,6 @@ const Services = () => {
   const ServicesStyle = styled.div`
     margin-top: 18vh;
     margin-bottom: 5%;
-    ${
-      "" /* @media screen and (max-width: 753px) {
-      margin-top: 15vh;
-    } */
     }
   `;
   return mount ? (

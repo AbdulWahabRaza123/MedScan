@@ -1,7 +1,9 @@
 import styled from "styled-components";
 import { Row, Col, Image, Container } from "react-bootstrap";
 export const Wrapper = styled.div``;
-export const ImageComp = (props) => {
+import React from "react";
+
+const ImageComp = (props) => {
   return (
     <>
       <Image
@@ -13,4 +15,4 @@ export const ImageComp = (props) => {
     </>
   );
 };
-export { Row, Col, Container };
+export { Row, Col, Container, ImageComp };
