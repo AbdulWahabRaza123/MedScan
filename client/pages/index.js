@@ -83,8 +83,10 @@ const Home = () => {
       <Container>
         <Section2 className="mb-5">
           <Wrapper className="text-center">
-            <h1 className="text-success">How to Use?</h1>
-            <p>Here are some steps which can lead you to fetch the report</p>
+            <h1 style={{ color: "#183e8f", fontWeight: "700" }}>How to Use?</h1>
+            <p style={{ color: "gray" }}>
+              <i> Here are some steps which can lead you to fetch the report</i>
+            </p>
           </Wrapper>
           <Row>
             {StepsCardData.map((val, index) => {

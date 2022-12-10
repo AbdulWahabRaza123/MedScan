@@ -1,13 +1,15 @@
 import React from "react";
 import NavbarComp from "../Components/Navbar";
-import { MDBInput, MDBCheckbox, MDBBtn } from "mdb-react-ui-kit";
-import { useMediaQuery } from "react-responsive";
+import { MDBInput, MDBCheckbox } from "../Components/Inputs";
+import { useMediaQuery } from "../Components/Layout";
 import { Container, Col, Row } from "../Components/Layout";
 import { useEffect, useState } from "react";
-import { LoginBtn } from "../Components/Buttons";
+import { MainBtn } from "../Components/Buttons";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import Footer from "../Components/Footer";
 const Login = () => {
+  const Route = useRouter();
   const [mount, setMount] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const [data, setData] = useState({
@@ -18,6 +20,10 @@ const Login = () => {
     const name = event.target.name;
     const value = event.target.value;
     setData({ ...data, [name]: value });
+  };
+  const SendData = () => {
+    localStorage.setItem("login", JSON.stringify(data));
+    Route.push("/Profile");
   };
   const isResponsive = useMediaQuery({
     query: "(max-width: 753px)",
@@ -79,8 +85,9 @@ const Login = () => {
             <a href="!#">Forgot password?</a>
           </Col>
         </Row>
-        <LoginBtn className="mb-4">Login</LoginBtn>
-        {/* <MDBBtn className="mb-4">Sign in</MDBBtn> */}
+        <MainBtn onClick={SendData} className="mb-4">
+          Login
+        </MainBtn>
 
         <div className="text-center">
           <p>

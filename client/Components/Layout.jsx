@@ -1,8 +1,7 @@
 import styled from "styled-components";
 import { Row, Col, Image, Container } from "react-bootstrap";
 export const Wrapper = styled.div``;
-import React from "react";
-
+import { useMediaQuery } from "react-responsive";
 const ImageComp = (props) => {
   return (
     <>
@@ -15,4 +14,4 @@ const ImageComp = (props) => {
     </>
   );
 };
-export { Row, Col, Container, ImageComp };
+export { Row, Col, Container, ImageComp, useMediaQuery };

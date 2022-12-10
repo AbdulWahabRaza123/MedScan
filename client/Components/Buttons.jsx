@@ -8,12 +8,12 @@ const RegistrationLoginBtn = styled.div`
   font-size: 18px;
   color: white;
   text-align: center;
-  background: #64ebb6;
+  background: #183e8f;
   &:hover {
-    background: #183e8f;
+    background: #64ebb6;
   }
 `;
-const LoginBtn = styled.div`
+const MainBtn = styled.div`
   width: 100%;
   height: auto;
   border-radius: 20px;
@@ -22,10 +22,9 @@ const LoginBtn = styled.div`
   font-size: 18px;
   color: white;
   text-align: center;
-  ${"" /* background: #64ebb6; */}
-  background:#183e8f;
+  background: #183e8f;
   &:hover {
     background: #64ebb6;
   }
 `;
-export { RegistrationLoginBtn, LoginBtn };
+export { RegistrationLoginBtn, MainBtn };

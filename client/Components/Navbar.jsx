@@ -1,3 +1,4 @@
+import { useContext, useEffect, useState } from "react";
 import Head from "next/head";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -11,6 +12,7 @@ import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import CallIcon from "@mui/icons-material/Call";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import AddIcon from "@mui/icons-material/Add";
+import { NavContext } from "../pages/_app";
 const NavLogoStyle = {
   width: "70px",
   height: "70px",
@@ -40,9 +42,14 @@ const NavLink = styled.p`
   @media screen and (min-width: 754px) {
     margin-left: 25px;
   }
+  
 `;
+
 const NavbarComp = (props) => {
   const router = useRouter();
+  const [mount, setMount] = useState(false);
+  const { NavState, NavDispatch } = useContext(NavContext);
+
   const pages = [
     { name: "Home", icon: HomeIcon },
     { name: "Services", icon: SettingsSuggestIcon },
@@ -51,7 +58,18 @@ const NavbarComp = (props) => {
     { name: "Login", icon: LockOpenIcon },
     { name: "Signup", icon: AddIcon },
   ];
-  return (
+  const pagesUser = [
+    { name: "Home", icon: HomeIcon },
+    { name: "Services", icon: SettingsSuggestIcon },
+    { name: "About", icon: AutoAwesomeIcon },
+    { name: "Contact", icon: CallIcon },
+    { name: "Profile", icon: LockOpenIcon },
+    { name: "Logout", icon: LockOpenIcon },
+  ];
+  useEffect(() => {
+    setMount(true);
+  }, [NavState]);
+  return mount ? (
     <>
       <Head>
         <title>{props.title}</title>
@@ -72,37 +90,67 @@ const NavbarComp = (props) => {
             />
             <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="ms-auto mt-4">
-                {pages.map((name, id) => {
-                  console.log(router.pathname);
-                  return (
-                    <>
-                      <NavLink key={id}>
-                        <Link
-                          href={`/${name.name === "Home" ? "" : name.name}`}
-                          style={{ textDecoration: "none" }}
-                        >
-                          <A
-                            active={
-                              router.pathname === "/" + name.name
-                                ? "active"
-                                : router.pathname === "/" &&
-                                  name.name === "Home"
-                                ? "active"
-                                : ""
-                            }
-                          >
-                            <name.icon
-                              style={{
-                                marginTop: "-6px",
-                              }}
-                            />
-                            {name.name}
-                          </A>
-                        </Link>
-                      </NavLink>
-                    </>
-                  );
-                })}
+                {NavState
+                  ? pages.map((name, id) => {
+                      return (
+                        <>
+                          <NavLink key={id}>
+                            <Link
+                              href={`/${name.name === "Home" ? "" : name.name}`}
+                              style={{ textDecoration: "none" }}
+                            >
+                              <A
+                                active={
+                                  router.pathname === "/" + name.name
+                                    ? "active"
+                                    : router.pathname === "/" &&
+                                      name.name === "Home"
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <name.icon
+                                  style={{
+                                    marginTop: "-6px",
+                                  }}
+                                />
+                                {name.name}
+                              </A>
+                            </Link>
+                          </NavLink>
+                        </>
+                      );
+                    })
+                  : pagesUser.map((name, id) => {
+                      return (
+                        <>
+                          <NavLink key={id}>
+                            <Link
+                              href={`/${name.name === "Home" ? "" : name.name}`}
+                              style={{ textDecoration: "none" }}
+                            >
+                              <A
+                                active={
+                                  router.pathname === "/" + name.name
+                                    ? "active"
+                                    : router.pathname === "/" &&
+                                      name.name === "Home"
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <name.icon
+                                  style={{
+                                    marginTop: "-6px",
+                                  }}
+                                />
+                                {name.name}
+                              </A>
+                            </Link>
+                          </NavLink>
+                        </>
+                      );
+                    })}
               </Nav>
             </Navbar.Collapse>
           </Container>
@@ -111,6 +159,8 @@ const NavbarComp = (props) => {
       <br />
       <br />
     </>
+  ) : (
+    <></>
   );
 };
 

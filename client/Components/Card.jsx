@@ -26,7 +26,10 @@ export const ContactCard = (props) => {
 const CardComp = () => {
   return (
     <>
-      <MaterialCard sx={{ maxWidth: 345 }}>
+      <MaterialCard
+        sx={{ maxWidth: 345 }}
+        style={{ boxShadow: "5px 5px 10px gray" }}
+      >
         <CardMedia
           component="img"
           alt="green iguana"
@@ -58,12 +61,18 @@ const StepsCard = (props) => {
     <>
       <Card
         className="mt-4"
-        border={props.color}
-        style={{ width: "100%", height: "150px", overflow: "auto" }}
+        style={{
+          width: "100%",
+          height: "150px",
+          overflow: "auto",
+          boxShadow: "5px 5px 10px gray",
+        }}
       >
         <Card.Body>
-          <Card.Title>{props.title}</Card.Title>
-          <Card.Text>{props.description}</Card.Text>
+          <Card.Title style={{ color: "#183e8f", fontWeight: "600" }}>
+            {props.title}
+          </Card.Title>
+          <Card.Text style={{ color: "gray" }}>{props.description}</Card.Text>
         </Card.Body>
       </Card>
     </>
