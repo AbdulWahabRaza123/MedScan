@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
-import NavbarComp from "../Components/Navbar";
-import Footer from "../Components/Footer";
-import { NavContext } from "../pages/_app";
-import { Container, Row, Col } from "../Components/Layout";
-const Profile = () => {
+import NavbarComp from "../../Components/Navbar";
+import Footer from "../../Components/Footer";
+import { NavContext } from "../_app";
+import { Container, Row, Col } from "../../Components/Layout";
+const Index = () => {
   const Router = useRouter();
   const [mount, setMount] = useState(false);
   const [login, setLogin] = useState(false);
@@ -33,4 +33,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default Index;

@@ -23,7 +23,7 @@ const Login = () => {
   };
   const SendData = () => {
     localStorage.setItem("login", JSON.stringify(data));
-    Route.push("/Profile");
+    Route.push("/User");
   };
   const isResponsive = useMediaQuery({
     query: "(max-width: 753px)",
