@@ -8,6 +8,7 @@ const RegistrationLoginBtn = styled.div`
   font-size: 18px;
   color: white;
   text-align: center;
+  cursor: pointer;
   background: #183e8f;
   &:hover {
     background: #64ebb6;
@@ -22,9 +23,25 @@ const MainBtn = styled.div`
   font-size: 18px;
   color: white;
   text-align: center;
+  cursor: pointer;
   background: #183e8f;
   &:hover {
     background: #64ebb6;
   }
 `;
-export { RegistrationLoginBtn, MainBtn };
+const BtnProfile = styled.div`
+  width: 120px;
+  height: auto;
+  border-radius: 10px;
+  padding: 7px 20px 7px 20px;
+  font-weight: 600;
+  font-size: 18px;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  background: #183e8f;
+  &:hover {
+    background: #64ebb6;
+  }
+`;
+export { RegistrationLoginBtn, MainBtn, BtnProfile };

@@ -1,11 +1,14 @@
 import NavbarComp from "../Components/Navbar";
-import { useState, useEffect } from "react";
+import { NavContext } from "./_app";
+import { useState, useEffect, useContext } from "react";
+import { useRouter } from "next/router";
 import { Carousel } from "react-responsive-carousel";
 import styles from "styled-components";
 import { Container, Row, Col } from "../Components/Layout";
 import { Wrapper } from "../Components/Layout";
 import { StepsCard } from "../Components/Card";
 import Footer from "../Components/Footer";
+import Loading from "../Components/Loading";
 const CarouselStyle = styles.div` 
 margin-top:4.3%;
 margin-bottom:8%;
@@ -45,8 +48,18 @@ const StepsCardData = [
 ];
 const Home = () => {
   const [mount, setMount] = useState(false);
+  const { NavState, NavDispatch } = useContext(NavContext);
+  const router = useRouter();
   useEffect(() => {
-    setMount(true);
+    const login = localStorage.getItem("login");
+    if (login) {
+      setMount(false);
+      NavDispatch({ type: "Nav", payload: false });
+      router.push("/User/");
+    } else {
+      setMount(true);
+      router.push("/");
+    }
   }, []);
   return mount ? (
     <>
@@ -108,7 +121,9 @@ const Home = () => {
       <Footer />
     </>
   ) : (
-    <></>
+    <>
+      <Loading />
+    </>
   );
 };
 

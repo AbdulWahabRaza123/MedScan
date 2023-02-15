@@ -194,7 +194,13 @@ const NavbarComp = (props) => {
                     <NavLink
                       style={{ marginLeft: isResponsive ? "6.5px" : "" }}
                     >
-                      <Link href="/Services" style={{ textDecoration: "none" }}>
+                      <Link
+                        href="/Services"
+                        style={{
+                          textDecoration: "none",
+                          borderBottom: "none",
+                        }}
+                      >
                         <A
                           active={
                             router.pathname === "/" + "Services" ? "active" : ""
