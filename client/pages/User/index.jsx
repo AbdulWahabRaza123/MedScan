@@ -4,8 +4,9 @@ import NavbarComp from "../../Components/Navbar";
 import Footer from "../../Components/Footer";
 import { NavContext } from "../_app";
 import { Carousel } from "react-responsive-carousel";
-import { Container, Row, Col } from "../../Components/Layout";
+import { Container, Row, Col, Wrapper } from "../../Components/Layout";
 import { BtnProfile } from "../../Components/Buttons";
+import CardComp from "../../Components/Card";
 import Loading from "../../Components/Loading";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import styles from "styled-components";
@@ -34,7 +35,7 @@ const Index = () => {
     <>
       <NavbarComp />
       <Container style={{ marginTop: "20vh" }}>
-        <Row>
+        <Row className="pb-5">
           <Col sm={6} md={6}>
             <CarouselStyle className="text-center">
               <Carousel
@@ -72,6 +73,13 @@ const Index = () => {
             <BtnProfile>Docs</BtnProfile>
           </Col>
         </Row>
+        <hr className="mt-1" />
+        <Wrapper className="mt-4 mb-5">
+          <h2 className="text-center text-bold">Services</h2>
+          <Wrapper className="d-flex flex-row mt-5">
+            <CardComp />
+          </Wrapper>
+        </Wrapper>
       </Container>
       <Footer />
     </>

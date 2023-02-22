@@ -9,8 +9,8 @@ import Card from "react-bootstrap/Card";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import CloseIcon from "@mui/icons-material/Close";
-import { Col } from "./Layout";
-export const ContactCard = (props) => {
+import { Row, Col, Wrapper } from "./Layout";
+const ContactCard = (props) => {
   return (
     <>
       <Col md={4} className="mt-5">
@@ -67,6 +67,7 @@ const CardComp = () => {
               onClick={handleClose}
             />
           </div>
+          <Wrapper className="mt-4">Hello</Wrapper>
         </Box>
       </Modal>
       <MaterialCard
@@ -121,5 +122,5 @@ const StepsCard = (props) => {
     </>
   );
 };
-export { StepsCard };
+export { StepsCard, ContactCard };
 export default CardComp;
