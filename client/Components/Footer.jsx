@@ -90,7 +90,6 @@ const Footer = () => {
             <Row>
               <Col md={6}>
                 {pages.map((name, id) => {
-                  console.log(router.pathname);
                   return (
                     <>
                       <FooterLink key={id}>

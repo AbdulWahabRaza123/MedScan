@@ -5,8 +5,11 @@ import { Container, Row, Col } from "../Components/Layout";
 import { RegistrationLoginBtn } from "../Components/Buttons";
 import { MainBtn } from "../Components/Buttons";
 import { useMediaQuery } from "../Components/Layout";
+import Loading from "../Components/Loading";
+import { useRouter } from "next/router";
 import Footer from "../Components/Footer";
 const Signup = () => {
+  const Route = useRouter();
   const [mount, setMount] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const [data, setData] = useState({
@@ -26,6 +29,31 @@ const Signup = () => {
   const isResponsive = useMediaQuery({
     query: "(max-width: 753px)",
   });
+  const PostDataRegister = async (event) => {
+    // event.preventDefault();
+    const { name, email, password, cPassword } = data;
+    if (name && email && password && cPassword) {
+      const res = await fetch("http://localhost:8000/registerPatient", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          cPassword,
+        }),
+      });
+      const data = await res.json();
+      if (data.message === "error") {
+        alert("Wrong Credentials");
+      } else {
+        alert("signup successful");
+        Route.push("/Login");
+      }
+    }
+  };
   useEffect(() => {
     setMount(true);
   }, []);
@@ -128,7 +156,9 @@ const Signup = () => {
                   />
                 </Col>
               </Row>
-              <MainBtn className="mb-4">Signup</MainBtn>
+              <MainBtn className="mb-4" onClick={PostDataRegister}>
+                Signup
+              </MainBtn>
             </Container>
           </Col>
         </Row>
@@ -136,7 +166,10 @@ const Signup = () => {
       <Footer />
     </>
   ) : (
-    <></>
+    <>
+      {" "}
+      <Loading />
+    </>
   );
 };
 

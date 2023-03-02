@@ -5,6 +5,7 @@ import { useMediaQuery } from "../Components/Layout";
 import { Container, Col, Row } from "../Components/Layout";
 import { useEffect, useState } from "react";
 import { MainBtn } from "../Components/Buttons";
+import Loading from "../Components/Loading";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Footer from "../Components/Footer";
@@ -21,9 +22,30 @@ const Login = () => {
     const value = event.target.value;
     setData({ ...data, [name]: value });
   };
-  const SendData = () => {
-    localStorage.setItem("login", JSON.stringify(data));
-    Route.push("/User");
+  const SendData = async () => {
+    const { email, password } = data;
+    if (email && password) {
+      const res = await fetch("http://localhost:8000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+        withCredentials: true,
+      });
+      const data = await res.json();
+      console.log("This is data ", data);
+      if (data.message === "error") {
+        alert("Wrong Credentials");
+      } else {
+        alert("login successful");
+        localStorage.setItem("login", JSON.stringify(data));
+        Route.push("/User");
+      }
+    }
   };
   const isResponsive = useMediaQuery({
     query: "(max-width: 753px)",
@@ -98,7 +120,9 @@ const Login = () => {
       <Footer />
     </>
   ) : (
-    <></>
+    <>
+      <Loading />
+    </>
   );
 };
 
