@@ -25,7 +25,7 @@ const Login = () => {
   const SendData = async () => {
     const { email, password } = data;
     if (email && password) {
-      const res = await fetch("http://localhost:8000/login", {
+      const res = await fetch("/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

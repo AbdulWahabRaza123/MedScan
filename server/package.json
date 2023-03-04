@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev":"nodemon src/app.js",
-    "start":"node src/app.js"
+    "start":"node src/app.js",
+    "frontend":"npm start --prefix ../frontend",
+    "build":"concurrently \"npm start\" \"npm run frontend\""
   },
   "author": "",
   "license": "ISC",
@@ -15,7 +17,6 @@
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
-    "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.9.2"
   }

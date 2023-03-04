@@ -20,6 +20,7 @@ const Index = () => {
       <NavbarComp />
       <div style={{ marginTop: "10%" }}>
         <h1>This is Admin</h1>
+       
       </div>
       <Footer />
     </>

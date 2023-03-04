@@ -5,6 +5,7 @@ const About = () => {
   return (
     <>
       <NavbarComp title="About" />
+    
     </>
   );
 };

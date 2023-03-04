@@ -33,7 +33,7 @@ const Signup = () => {
     // event.preventDefault();
     const { name, email, password, cPassword } = data;
     if (name && email && password && cPassword) {
-      const res = await fetch("http://localhost:8000/registerPatient", {
+      const res = await fetch("/registerPatient", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
