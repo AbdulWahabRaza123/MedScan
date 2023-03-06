@@ -8,7 +8,7 @@ const Logout = () => {
   const router = useRouter();
   const { NavState, NavDispatch } = useContext(NavContext);
   useEffect(() => {
-    NavDispatch({ type: "Nav", payload: true });
+    NavDispatch({ type: "Nav", payload: "simple" });
     localStorage.removeItem("login");
     router.push("/");
   }, []);

@@ -140,7 +140,7 @@ const NavbarComp = (props) => {
             </span>
             <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="ms-auto mt-4">
-                {NavState ? (
+                {NavState==="simple" ? (
                   pages.map((name, id) => {
                     return (
                       <>

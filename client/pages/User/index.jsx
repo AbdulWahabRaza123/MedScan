@@ -21,14 +21,49 @@ const Index = () => {
   const Router = useRouter();
   const [mount, setMount] = useState(false);
   const { NavState, NavDispatch } = useContext(NavContext);
+  // const authAdmin = async () => {
+  //   const res = await fetch("/authAdmin", {
+  //     method: "GET",
+  //     headers: {
+  //       Accept: "application/json",
+  //       "Content-Type": "application/json",
+  //     },
+  //     credentials: "include",
+  //   });
+  //   const data = await res.json();
+  //   if (data.message === "done") {
+  //     setMode("admin");
+  //   } else {
+      
+  //   }
+  // };
+  const authUser = async () => {
+    const res = await fetch("/authUser", {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    const data = await res.json();
+    if (data.message === "done") {
+     
+    } else {
+     
+    }
+  };
   useEffect(() => {
+    authUser();
     const login = localStorage.getItem("login");
     if (!login) {
       setMount(false);
       Router.push("/Login");
     } else {
+    
       setMount(true);
-      NavDispatch({ type: "Nav", payload: false });
+      NavDispatch({ type: "Nav", payload: "user" });
+    
     }
   }, []);
   return mount ? (

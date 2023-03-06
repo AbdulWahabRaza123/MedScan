@@ -9,8 +9,16 @@ const router = express.Router();
 const { json } = express();
 const Admin = require("../models/admin");
 const Patient = require("../models/patient");
+const authAdmin = require("../middleware/authAdmin");
+const authAuth = require("../middleware/authUser");
 router.get("/hello", (req, res) => {
   res.send("Hello Server");
+});
+router.get("/authAdmin", authAdmin, (req, res) => {
+  res.status(200).json({ message: "done",mode:"admin" });
+});
+router.get("/authUser", authUser, (req, res) => {
+  res.status(200).json({ message: "done",mode:"user" });
 });
 router.post("/registerAdmin", async (req, res) => {
   try {

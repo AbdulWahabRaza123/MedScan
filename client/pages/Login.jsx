@@ -41,9 +41,15 @@ const Login = () => {
       if (data.message === "error") {
         alert("Wrong Credentials");
       } else {
-        alert("login successful");
+        if(data.mode==="user"){
+          alert("User login successful");
+          localStorage.setItem("login", JSON.stringify(data));
+          Route.push("/User");
+        }
+        else if(data.mode==="admin")
+        alert("Admin login successful");
         localStorage.setItem("login", JSON.stringify(data));
-        Route.push("/User");
+        Route.push("/Admin");
       }
     }
   };

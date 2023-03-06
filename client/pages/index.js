@@ -54,7 +54,7 @@ const Home = () => {
     const login = localStorage.getItem("login");
     if (login) {
       setMount(false);
-      NavDispatch({ type: "Nav", payload: false });
+      NavDispatch({ type: "Nav", payload: "user" });
       router.push("/User/");
     } else {
       setMount(true);

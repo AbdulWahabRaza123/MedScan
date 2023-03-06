@@ -12,7 +12,7 @@ const Index = () => {
       Router.push("/Login");
     } else {
       setMount(true);
-      NavDispatch({ type: "Nav", payload: false });
+      NavDispatch({ type: "Nav", payload: "admin" });
     }
   }, []);
   return mount ? (
