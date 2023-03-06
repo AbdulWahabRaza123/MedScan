@@ -19,7 +19,6 @@ import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import Badge from "@mui/material/Badge";
 import MailIcon from "@mui/icons-material/Mail";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-
 import { NavContext } from "../pages/_app";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -54,11 +53,9 @@ const A = styled.a`
 const NavLink = styled.p`
   font-style: normal;
   font-weight: 700;
-  }
   @media screen and (min-width: 754px) {
     margin-left: 25px;
   }
-  
 `;
 const pages = [
   { name: "Home", icon: HomeIcon },
@@ -68,12 +65,7 @@ const pages = [
   { name: "Login", icon: LockOpenIcon },
   { name: "Signup", icon: AddIcon },
 ];
-const settings = [
-  { name: "Profile", path: "/User" },
-  { name: "Account", path: "/User/Account" },
-  { name: "Dashboard", path: "/User/Dashboard" },
-  { name: "Logout", path: "/User/Logout" },
-];
+
 function notificationsLabel(count) {
   if (count === 0) {
     return "no notifications";
@@ -98,6 +90,15 @@ const NavbarComp = (props) => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+  let s = NavState.replace(/\w+/g, function (w) {
+    return w[0].toUpperCase() + w.slice(1).toLowerCase();
+  });
+  const settings = [
+    { name: "Profile", path: `/${s}` },
+    { name: "Account", path: `/${s}/Account` },
+    { name: "Dashboard", path: `/${s}/Dashboard` },
+    { name: "Logout", path: `/${s}/Logout` },
+  ];
   useEffect(() => {
     setMount(true);
   }, [NavState]);

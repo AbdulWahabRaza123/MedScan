@@ -63,7 +63,10 @@ const Index = () => {
     
       setMount(true);
       NavDispatch({ type: "Nav", payload: "user" });
+<<<<<<< HEAD
     
+=======
+>>>>>>> 3c51dbb102cc073dbd95239e494708859ce27d11
     }
   }, []);
   return mount ? (

@@ -10,7 +10,7 @@ const { json } = express();
 const Admin = require("../models/admin");
 const Patient = require("../models/patient");
 const authAdmin = require("../middleware/authAdmin");
-const authAuth = require("../middleware/authUser");
+const authUser = require("../middleware/authUser");
 router.get("/hello", (req, res) => {
   res.send("Hello Server");
 });
@@ -64,8 +64,11 @@ router.post("/registerPatient", async (req, res) => {
     if (!name || !email || !password || !cPassword) {
       res.json({ message: "error", type: "uncompleted details" });
     }
+    const admin = await Admin.findOne({ email });
+    if (admin) {
+      res.json({ message: "error", type: "data already exist" });
+    }
     const confirm = await Patient.findOne({ email });
-    console.log("This is confirm ", confirm);
     if (confirm) {
       res.json({ message: "error", type: "data already exist" });
     } else {
@@ -118,7 +121,7 @@ router.post("/login", async (req, res) => {
             secure: true,
           })
           .status(200)
-          .json({ message: "done", token: token, mode: "Patient" });
+          .json({ message: "done", token: token, mode: "user" });
       } else {
         return res.status(400).json({ message: "error" });
       }
@@ -139,7 +142,7 @@ router.post("/login", async (req, res) => {
               secure: true,
             })
             .status(200)
-            .json({ message: "done", token: token, mode: "Admin" });
+            .json({ message: "done", token: token, mode: "admin" });
         } else {
           return res.status(400).json({ message: "error" });
         }

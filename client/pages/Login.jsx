@@ -37,7 +37,6 @@ const Login = () => {
         withCredentials: true,
       });
       const data = await res.json();
-      console.log("This is data ", data);
       if (data.message === "error") {
         alert("Wrong Credentials");
       } else {
