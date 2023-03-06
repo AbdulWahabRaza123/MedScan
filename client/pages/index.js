@@ -13,7 +13,7 @@ const CarouselStyle = styles.div`
 margin-top:4.3%;
 margin-bottom:8%;
 .c_img{
-  height: 558px;
+  height:85vh;
 }
 @media screen and (max-width: 754px) {
   margin-top:20%;
@@ -54,7 +54,7 @@ const Home = () => {
     const login = localStorage.getItem("login");
     if (login) {
       setMount(false);
-      NavDispatch({ type: "Nav", payload: false });
+      NavDispatch({ type: "Nav", payload: "user" });
       router.push("/User/");
     } else {
       setMount(true);

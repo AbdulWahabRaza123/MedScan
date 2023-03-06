@@ -37,13 +37,18 @@ const Login = () => {
         withCredentials: true,
       });
       const data = await res.json();
-      console.log("This is data ", data);
       if (data.message === "error") {
         alert("Wrong Credentials");
       } else {
-        alert("login successful");
-        localStorage.setItem("login", JSON.stringify(data));
-        Route.push("/User");
+        if (data.mode === "admin") {
+          alert("login successful");
+          localStorage.setItem("login", JSON.stringify(data));
+          Route.push("/Admin");
+        } else if (data.mode === "user") {
+          alert("login successful");
+          localStorage.setItem("login", JSON.stringify(data));
+          Route.push("/User");
+        }
       }
     }
   };
