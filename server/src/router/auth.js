@@ -1,16 +1,29 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const fs = require("fs");
 const app = express();
 const cookieParser = require("cookie-parser");
+const multer = require("multer");
+const fs = require("fs");
 app.use(cookieParser());
 const router = express.Router();
 const { json } = express();
 const Admin = require("../models/admin");
 const Patient = require("../models/patient");
+const Radiologist = require("../models/radiologist");
+const Report=require("../models/report");
 const authAdmin = require("../middleware/authAdmin");
 const authUser = require("../middleware/authUser");
+const authRadiologist = require("../middleware/authRadiologist");
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads");
+  },
+  filename: function (req, file, cb) {
+    cb(null, "temp.jpg");
+  },
+});
+let upload = multer({ storage: storage });
 router.get("/hello", (req, res) => {
   res.send("Hello Server");
 });
@@ -20,6 +33,10 @@ router.get("/authAdmin", authAdmin, (req, res) => {
 router.get("/authUser", authUser, (req, res) => {
   res.status(200).json({ message: "done",mode:"user" });
 });
+router.get("/authRadiologist", authRadiologist, (req, res) => {
+  res.status(200).json({ message: "done",mode:"radiologist" });
+});
+// Register Admin 
 router.post("/registerAdmin", async (req, res) => {
   try {
     const { name, email, phone, password, cPassword, pin } = req.body;
@@ -28,7 +45,7 @@ router.post("/registerAdmin", async (req, res) => {
     }
     const confirm = await Admin.findOne({ email });
     if (confirm) {
-      res.json({ message: "error", type: "data already exist" });
+      res.json({ message: "error", type: "data already exist",mode:"admin" });
     } else {
       if (password === cPassword) {
         const admin = await new Admin({
@@ -43,34 +60,34 @@ router.post("/registerAdmin", async (req, res) => {
           const data = await admin.save();
           res
             .status(200)
-            .json({ message: "done", type: "successfully registration" });
+            .json({ message: "done", type: "successfully registration",mode:"admin" });
         } else {
           res
             .status(401)
-            .json({ message: "error", type: "error in storing data" });
+            .json({ message: "error", type: "error in storing data",mode:"admin" });
         }
       } else {
-        res.json({ message: "error", type: "password not matching" });
+        res.json({ message: "error", type: "password not matching",mode:"admin" });
       }
     }
   } catch (e) {
-    res.json({ message: "error", type: "unknown error" });
+    res.json({ message: "error", type: "unknown error",mode:"admin" });
   }
 });
-// Patient
+// Register Patient
 router.post("/registerPatient", async (req, res) => {
   try {
     const { name, email, password, cPassword } = req.body;
     if (!name || !email || !password || !cPassword) {
-      res.json({ message: "error", type: "uncompleted details" });
+      res.json({ message: "error", type: "uncompleted details",mode:"patient" });
     }
     const admin = await Admin.findOne({ email });
     if (admin) {
-      res.json({ message: "error", type: "data already exist" });
+      res.json({ message: "error", type: "data already exist",mode:"patient" });
     }
     const confirm = await Patient.findOne({ email });
     if (confirm) {
-      res.json({ message: "error", type: "data already exist" });
+      res.json({ message: "error", type: "data already exist",mode:"patient" });
     } else {
       if (password === cPassword) {
         const patient = await new Patient({
@@ -86,20 +103,75 @@ router.post("/registerPatient", async (req, res) => {
 
           res
             .status(200)
-            .json({ message: "done", type: "successfully registration" });
+            .json({ message: "done", type: "successfully registration",mode:"patient" });
         } else {
           res
             .status(401)
-            .json({ message: "error", type: "error in storing data" });
+            .json({ message: "error", type: "error in storing data",mode:"patient" });
         }
       } else {
-        res.json({ message: "error", type: "password not matching" });
+        res.json({ message: "error", type: "password not matching",mode:"patient" });
       }
     }
   } catch (e) {
-    res.json({ message: "error", type: "unknown error" });
+    res.json({ message: "error", type: "unknown error",mode:"patient" });
   }
 });
+// Register Radiologist
+router.post("/registerRadiologist", async (req, res) => {
+  try {
+    const { name, email,specialization, password, cPassword } = req.body;
+    if (!name || !email ||!specialization|| !password || !cPassword) {
+      res.json({ message: "error", type: "uncompleted details",mode:"radiologist" });
+    }
+    const admin = await Admin.findOne({ email });
+    if (admin) {
+      res.json({ message: "error", type: "data already exist",mode:"radiologist" });
+    }
+    else{
+    const patient = await Patient.findOne({ email });
+    if (patient) {
+      res.json({ message: "error", type: "data already exist",mode:"radiologist" });
+    }
+    else{
+      
+    const confirm = await Radiologist.findOne({ email });
+    if (confirm) {
+      res.json({ message: "error", type: "data already exist",mode:"radiologist" });
+    } else {
+      if (password === cPassword) {
+        const radiologist = await new Radiologist({
+          name,
+          email,
+          specialization,
+          password,
+          cPassword,
+        });
+
+        if (radiologist) {
+        //  console.log("This is radiologist ",radiologist);
+          const data = await radiologist.save();
+          
+
+          res
+            .status(200)
+            .json({ message: "done", type: "successfully registration",mode:"radiologist" });
+        } else {
+          res
+            .status(401)
+            .json({ message: "error", type: "error in storing data",mode:"radiologist" });
+        }
+      } else {
+        res.json({ message: "error", type: "password not matching",mode:"radiologist" });
+      }
+    }
+    }
+  }
+  } catch (e) {
+    res.json({ message: "error", type: "unknown error",mode:"radiologist" });
+  }
+});
+// Login Post Request 
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -114,46 +186,100 @@ router.post("/login", async (req, res) => {
       if (matchPassword) {
         res
           .cookie("jwToken", token, {
-            key: "admin",
+            key: "user",
             maxAge: 2 * 60 * 60 * 1000,
             httpOnly: true,
             sameSite: "strict",
             secure: true,
           })
           .status(200)
-          .json({ message: "done", token: token, mode: "user" });
+          .json({ message: "done", token: token, mode: "user",data:patient });
       } else {
         return res.status(400).json({ message: "error" });
       }
-    } else {
-      const admin = await Admin.findOne({ email });
-
-      if (admin) {
-        const matchPassword = await bcrypt.compare(password, admin.password);
-        const token = await admin.generateAuthToken();
-
+    }
+    else{
+      const radiologist = await Radiologist.findOne({ email });
+      if (radiologist) {
+        const matchPassword = await bcrypt.compare(password, radiologist.password);
+        const token = await radiologist.generateAuthToken();
+  
         if (matchPassword) {
           res
             .cookie("jwToken", token, {
-              key: "admin",
+              key: "radiologist",
               maxAge: 2 * 60 * 60 * 1000,
               httpOnly: true,
               sameSite: "strict",
               secure: true,
             })
             .status(200)
-            .json({ message: "done", token: token, mode: "admin" });
+            .json({ message: "done", token: token, mode: "radiologist",data:radiologist });
         } else {
           return res.status(400).json({ message: "error" });
         }
-      } else {
-        return res
-          .status(401)
-          .json({ message: "error", type: "patient not found" });
+      }
+      else if(!radiologist&&!patient){
+        const admin = await Admin.findOne({ email });
+
+        if (admin) {
+          const matchPassword = await bcrypt.compare(password, admin.password);
+          const token = await admin.generateAuthToken();
+  
+          if (matchPassword) {
+            res
+              .cookie("jwToken", token, {
+                key: "admin",
+                maxAge: 2 * 60 * 60 * 1000,
+                httpOnly: true,
+                sameSite: "strict",
+                secure: true,
+              })
+              .status(200)
+              .json({ message: "done", token: token, mode: "admin",data:admin });
+          } else {
+            return res.status(400).json({ message: "error" });
+          }
+        } else {
+          return res
+            .status(401)
+            .json({ message: "error", type: "data not found" });
+        }
       }
     }
+    
   } catch (e) {
     return res.json({ message: "error", type: "unknown error" });
+  }
+});
+router.post("/GenerateReport",upload.single("Image"),async(req,res)=>{
+  try {
+    console.log("I am here ");
+    res.status(200).json({ message: "done", report: "This is report from backend..." });
+  }catch(e){
+    return res.status(401).json({ message: "error", type: "unknown error" });
+  }
+
+})
+router.get("/AdminLogout", authAdmin, (req, res) => {
+  if (req.cookies.jwToken) {
+    res.clearCookie("jwToken", { path: "/" }).json({ message: "done" });
+  } else {
+    res.json({ message: "done" });
+  }
+});
+router.get("/UserLogout", authUser, (req, res) => {
+  if (req.cookies.jwToken) {
+    res.clearCookie("jwToken", { path: "/" }).json({ message: "done" });
+  } else {
+    res.json({ message: "done" });
+  }
+});
+router.get("/RadiologistLogout", authRadiologist, (req, res) => {
+  if (req.cookies.jwToken) {
+    res.clearCookie("jwToken", { path: "/" }).json({ message: "done" });
+  } else {
+    res.json({ message: "done" });
   }
 });
 module.exports = router;

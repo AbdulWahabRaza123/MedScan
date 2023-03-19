@@ -5,7 +5,6 @@ const authAdmin = async (req, res, next) => {
     const token = req.cookies.jwToken;
     // const token = req.cookies.session;
     const verifyToken = jwt.verify(token, process.env.SECRET_KEY);
-
     const rootKey = await Admin.findOne({
       _id: verifyToken._id,
       "tokens.token": token,
