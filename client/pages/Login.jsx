@@ -9,6 +9,7 @@ import Loading from "../Components/Loading";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Footer from "../Components/Footer";
+
 const Login = () => {
   const Route = useRouter();
   const [mount, setMount] = useState(false);
@@ -37,19 +38,36 @@ const Login = () => {
         withCredentials: true,
       });
       const data = await res.json();
+      
       if (data.message === "error") {
         alert("Wrong Credentials");
       } else {
+      
+            const store=JSON.stringify({
+                id:data.data._id,
+                name:data.data.name,
+                email:data.data.email,
+                mode:data.mode,
+                token:data.token 
+            });
         if(data.mode==="user"){
           alert("User login successful");
-          localStorage.setItem("login", JSON.stringify(data));
+          localStorage.setItem("login", store);
           Route.push("/User");
         }
-        else if(data.mode==="admin")
+        else if(data.mode==="radiologist"){
+          alert("Radiologist login successful");
+          localStorage.setItem("login", store);
+          Route.push("/Radiologist");
+        }
+        else if(data.mode==="admin"){
         alert("Admin login successful");
-        localStorage.setItem("login", JSON.stringify(data));
+        localStorage.setItem("login",store);
         Route.push("/Admin");
+        }
+        
       }
+      
     }
   };
   const isResponsive = useMediaQuery({

@@ -8,6 +8,7 @@ import { BtnProfile } from "../../Components/Buttons";
 import CardComp from "../../Components/Card";
 import Loading from "../../Components/Loading";
 import styles from "styled-components";
+import { useRouter } from "next/router";
 const CarouselStyle = styles.span` 
 
 `;
@@ -17,6 +18,7 @@ const ImageStyle = {
 };
 const Index = () => {
   const [mount, setMount] = useState(false);
+  const Router=useRouter();
   const { NavState, NavDispatch } = useContext(NavContext);
   useEffect(() => {
     const login = localStorage.getItem("login");

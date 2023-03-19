@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import { Spacer } from "./Spacer";
 import MaterialCard from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -9,7 +11,10 @@ import Card from "react-bootstrap/Card";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import CloseIcon from "@mui/icons-material/Close";
+import SendIcon from "@mui/icons-material/Send";
 import { Row, Col, Wrapper } from "./Layout";
+import axios from "axios";
+import { P } from "./Typography";
 const ContactCard = (props) => {
   return (
     <>
@@ -28,7 +33,11 @@ const ContactCard = (props) => {
   );
 };
 
-const CardComp = () => {
+const CardComp = (props) => {
+  const Router = useRouter();
+  const [file, setFile] = useState(null);
+  const [showImage, setShowImage] = useState(null);
+  const [report,setReport]=useState("Hello...");
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -41,7 +50,25 @@ const CardComp = () => {
     bgcolor: "background.paper",
     boxShadow: 24,
     height: "100vh",
+    overflow: "scroll",
     p: 2,
+  };
+
+  const GenerateReport = async () => {
+    try {
+      const res = await axios.post("/GenerateReport", file,{
+        headers: {
+          "Content-Type": "multipart/form-data",
+        }});
+        console.log("This is reponse ",res);
+        if(res.data.message==="done"){
+setReport(res.data.report);
+        }else{
+        }
+    } catch (ex) {
+      console.log(ex);
+    }
+  
   };
   return (
     <>
@@ -67,7 +94,94 @@ const CardComp = () => {
               onClick={handleClose}
             />
           </div>
-          <Wrapper className="mt-4">Hello</Wrapper>
+          {props.mode === "radiologist" ? (
+            <>
+              <Wrapper>
+                <Spacer height="10vh" />
+                <Row>
+                  <Col md={4}>
+                    <Button
+                      variant="contained"
+                      component="label"
+                      sx={{ background: "#183e8f" }}
+                    >
+                      Upload
+                      <input
+                        hidden
+                        accept="image/*"
+                        type="file"
+                        onChange={(event) => {
+                          setShowImage(event.target.files[0]);
+                          const formData = new FormData();
+                          formData.append(
+                            "Image",
+                            event.target.files[0],
+                            event.target.files[0].name
+                          );
+                          setFile(formData);
+                        }}
+                      />
+                    </Button>
+                    {showImage && (
+                      <Button
+                        variant="contained"
+                        component="label"
+                        color="error"
+                        className="ms-2"
+                        onClick={() => {setShowImage(null);setFile(null);}}
+                      >
+                        Remove
+                      </Button>
+                    )}
+                  </Col>
+                  <Col md={4} className="mt-5">
+                    {showImage && (
+                      <Wrapper>
+                        <img
+                          alt="not found"
+                          width={"70%"}
+                          style={{ border: "1px solid black" }}
+                          src={URL.createObjectURL(showImage)}
+                        />
+                        <br />
+                        <Wrapper>
+                          <P className="mt-1" color="gray" size="12px">
+                            Click on Next to generate Report
+                          </P>
+                          <Button
+                            variant="contained"
+                            endIcon={<SendIcon />}
+                            sx={{ background: "#183e8f" }}
+                            onClick={GenerateReport}
+                          >
+                            Next
+                          </Button>
+                        </Wrapper>
+                      </Wrapper>
+                    )}
+                  </Col>
+                  <Col md={4} className="mt-5">
+                    <Wrapper
+                      className="p-3"
+                      width="70%"
+                      height="25vh"
+                      bg="black"
+                      border="1px solid gray"
+                      color="white"
+                      borderRadius="15px"
+                    >
+                      <P className="mb-0" size="12px">
+                        {report}
+                      </P>
+                    </Wrapper>
+                  </Col>
+                </Row>
+              </Wrapper>
+            </>
+          ) : null}
+          {props.mode === "user" ? (
+            <Wrapper className="mt-4">Radiologist</Wrapper>
+          ) : null}
         </Box>
       </Modal>
       <MaterialCard
@@ -91,7 +205,13 @@ const CardComp = () => {
           </Typography>
         </CardContent>
         <CardActions>
-          <Button size="small" onClick={handleOpen}>
+          <Button
+            size="small"
+            onClick={() => {
+              if (props.restrict) Router.push("/Login");
+              else handleOpen();
+            }}
+          >
             <b>Go</b>
           </Button>
           <Button size="small">Learn More</Button>

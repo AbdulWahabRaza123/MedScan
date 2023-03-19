@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useContext } from "react";
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
 import { useRouter } from "next/router";
 import { NavContext } from "../_app.js";
 import Loading from "../../Components/Loading.jsx";
@@ -8,8 +6,8 @@ const Logout = () => {
   const router = useRouter();
   const { NavState, NavDispatch } = useContext(NavContext);
   const [mount,setMount]=useState(false);
-  const adminAuth = async () => {
-    const res = await fetch("/AdminLogout", {
+  const radiologistAuth = async () => {
+    const res = await fetch("/RadiologistLogout", {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -25,21 +23,20 @@ const Logout = () => {
     }
   };
   useEffect(() => {
-    async function verifyAdmin() {
-        const temp=await adminAuth();
-        console.log("This is data ",temp);
-        if(temp){
+    async function verifyRadiologist() {
+      const temp=radiologistAuth();
+      if(temp){
         NavDispatch({ type: "Nav", payload: "simple" });
         localStorage.removeItem("login");
         setMount(true);
         router.push("/");
         }
         else{
-            router.push("/Admin");
-        }
+          router.push("/Radiologist");
       }
-      verifyAdmin();
-   
+    }
+    verifyRadiologist();
+  
   }, [mount]);
   return mount?(<></>):<><Loading/></>
 };

@@ -82,8 +82,7 @@ const Footer = () => {
   ];
   return (
     <>
-      <br />
-      <br />
+   <br/><br/>
       <BorderTop>
         <Container>
           <LinksStyle>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useRouter } from "next/router";
+import { useRouter,useLocation } from "next/router";
 import NavbarComp from "../../Components/Navbar";
 import Footer from "../../Components/Footer";
 import { NavContext } from "../_app";
@@ -13,6 +13,13 @@ import styles from "styled-components";
 const CarouselStyle = styles.span` 
 
 `;
+const CeroselData=[
+
+    "assets/banner3.jpg",
+    "assets/banner2.jpg",
+    "assets/banner1.jpg"
+
+]
 const ImageStyle = {
   width: "100%",
   border: "1px solid black",
@@ -20,23 +27,8 @@ const ImageStyle = {
 const Index = () => {
   const Router = useRouter();
   const [mount, setMount] = useState(false);
+  const [data,setData]=useState(null);
   const { NavState, NavDispatch } = useContext(NavContext);
-  // const authAdmin = async () => {
-  //   const res = await fetch("/authAdmin", {
-  //     method: "GET",
-  //     headers: {
-  //       Accept: "application/json",
-  //       "Content-Type": "application/json",
-  //     },
-  //     credentials: "include",
-  //   });
-  //   const data = await res.json();
-  //   if (data.message === "done") {
-  //     setMode("admin");
-  //   } else {
-      
-  //   }
-  // };
   const authUser = async () => {
     const res = await fetch("/authUser", {
       method: "GET",
@@ -48,30 +40,33 @@ const Index = () => {
     });
     const data = await res.json();
     if (data.message === "done") {
-     
+   
     } else {
-     
+     console.log("Data not found");
     }
   };
   useEffect(() => {
-    authUser();
+    async function verifyUser() {
+    // authUser();
     const login = localStorage.getItem("login");
+   
+   
     if (!login) {
       setMount(false);
       Router.push("/Login");
     } else {
-    
+      const info=await JSON.parse(login);
+    setData(info);
       setMount(true);
       NavDispatch({ type: "Nav", payload: "user" });
-<<<<<<< HEAD
     
-=======
->>>>>>> 3c51dbb102cc073dbd95239e494708859ce27d11
     }
+  }
+  verifyUser();
   }, []);
   return mount ? (
     <>
-      <NavbarComp />
+      <NavbarComp name={data.name}/>
       <Container style={{ marginTop: "20vh" }}>
         <Row className="pb-5">
           <Col sm={6} md={6}>
@@ -84,29 +79,26 @@ const Index = () => {
                 showArrows={false}
                 showThumbs={false}
               >
-                <div>
+              {
+                CeroselData.map((val,index)=>{
+                  return( 
+                    <>
+                    <div key={index}>
                   <img
                     style={{ borderRadius: "25px" }}
-                    src="assets/banner3.jpg"
+                    src={val}
                   />
                 </div>
-                <div>
-                  <img
-                    style={{ borderRadius: "25px" }}
-                    src="assets/banner2.jpg"
-                  />
-                </div>
-                <div>
-                  <img
-                    style={{ borderRadius: "25px" }}
-                    src="assets/banner1.jpg"
-                  />
-                </div>
+                    </>
+                  )
+                })
+              }
+             
               </Carousel>
             </CarouselStyle>
           </Col>
           <Col sm={6} md={6} className="mt-4">
-            <h1>Hello, Abdul Wahab Raza</h1>
+            <h1>Hello, {data.name}</h1>
             <p style={{ color: "gray" }}>Nice to Meet you!</p>
             <BtnProfile>Docs</BtnProfile>
           </Col>

@@ -22,7 +22,7 @@ const Services = () => {
         <ServicesStyle>
           <Row>
             <Col md={4}>
-              <CardComp />
+              <CardComp restrict={true}/>
             </Col>
           </Row>
         </ServicesStyle>

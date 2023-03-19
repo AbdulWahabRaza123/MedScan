@@ -225,7 +225,7 @@ const NavbarComp = (props) => {
                           marginLeft: "20px",
                         }}
                       >
-                        Abdul Wahab Raza
+                        {props.name}
                       </span>
                     ) : (
                       <></>
@@ -237,7 +237,7 @@ const NavbarComp = (props) => {
                     >
                       <Tooltip title="Open settings">
                         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                          <Avatar alt="Remy Sharp" src="/assets/profile.jpg" />
+                          <Avatar alt="Avatar" src="/assets/profile.jpg" />
                         </IconButton>
                       </Tooltip>
                       <Menu
