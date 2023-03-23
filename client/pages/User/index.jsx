@@ -14,11 +14,9 @@ const CarouselStyle = styles.span`
 
 `;
 const CeroselData=[
-
     "assets/banner3.jpg",
     "assets/banner2.jpg",
     "assets/banner1.jpg"
-
 ]
 const ImageStyle = {
   width: "100%",
@@ -36,6 +34,7 @@ const Index = () => {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
+      
       credentials: "include",
     });
     const data = await res.json();
@@ -49,8 +48,6 @@ const Index = () => {
     async function verifyUser() {
     // authUser();
     const login = localStorage.getItem("login");
-   
-   
     if (!login) {
       setMount(false);
       Router.push("/Login");
@@ -107,7 +104,7 @@ const Index = () => {
         <Wrapper className="mt-4 mb-5">
           <h2 className="text-center text-bold">Services</h2>
           <Wrapper className="d-flex flex-row mt-5">
-            <CardComp />
+            <CardComp mode="user" data={data}/>
           </Wrapper>
         </Wrapper>
       </Container>

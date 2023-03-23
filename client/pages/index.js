@@ -51,15 +51,28 @@ const Home = () => {
   const { NavState, NavDispatch } = useContext(NavContext);
   const router = useRouter();
   useEffect(() => {
-    const login = localStorage.getItem("login");
-    if (login) {
-      setMount(false);
-      NavDispatch({ type: "Nav", payload: "user" });
-      router.push("/User/");
-    } else {
-      setMount(true);
-      router.push("/");
+    async function verifyUser() {
+      const login = localStorage.getItem("login");
+      if (login) {
+        setMount(true);
+        const info = await JSON.parse(login);
+
+        if (info.mode === "user") {
+          NavDispatch({ type: "Nav", payload: "user" });
+          router.push("/User");
+        } else if (info.mode === "radiologist") {
+          NavDispatch({ type: "Nav", payload: "radiologist" });
+          router.push("/Radiologist");
+        } else if (info.mode === "admin") {
+          NavDispatch({ type: "Nav", payload: "admin" });
+          router.push("/Admin");
+        }
+      } else {
+        setMount(true);
+        router.push("/");
+      }
     }
+    verifyUser();
   }, []);
   return mount ? (
     <>

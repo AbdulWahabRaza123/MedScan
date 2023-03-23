@@ -13,6 +13,7 @@ import Modal from "@mui/material/Modal";
 import CloseIcon from "@mui/icons-material/Close";
 import SendIcon from "@mui/icons-material/Send";
 import { Row, Col, Wrapper } from "./Layout";
+import Form from "react-bootstrap/Form";
 import axios from "axios";
 import { P } from "./Typography";
 const ContactCard = (props) => {
@@ -37,10 +38,20 @@ const CardComp = (props) => {
   const Router = useRouter();
   const [file, setFile] = useState(null);
   const [showImage, setShowImage] = useState(null);
-  const [report,setReport]=useState("Hello...");
+  const [report, setReport] = useState("Hello...");
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const regex = new RegExp("[a-z]*[0-9]*.@gmail.com");
+  // Patient States
+  const [userData, setUserData] = useState({
+    name: "",
+    email: "",
+    radiologistName: "",
+  });
   const style = {
     position: "absolute",
     top: "50%",
@@ -56,20 +67,82 @@ const CardComp = (props) => {
 
   const GenerateReport = async () => {
     try {
-      const res = await axios.post("/GenerateReport", file,{
-        headers: {
-          "Content-Type": "multipart/form-data",
-        }});
-        console.log("This is reponse ",res);
-        if(res.data.message==="done"){
-setReport(res.data.report);
-        }else{
+      if (email) {
+        const res = await axios.post(
+          "/GenerateReport",
+          { file, patitentEmail: email, radiologistEmail: props.data.email },
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        if (res.data.message === "done") {
+          setLoading(false);
+          setEmail("");
+          setReport(res.data.report);
+          setDone(true);
+        } else {
+          setLoading(false);
+          setEmail("");
+          setReport("Report Error!!! Enter right email");
         }
+      } else {
+        alert("Enter the email");
+      }
     } catch (ex) {
-      console.log(ex);
+      setLoading(false);
+      setEmail("");
+      setReport("Report Error!!! Enter right email");
     }
-  
   };
+  const getPatientReport = async (email) => {
+    try {
+      const res = await fetch("/getPatientReport", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+        }),
+        withCredentials: true,
+      });
+      const data = await res.json();
+      console.log("This is data ", data.data);
+      if (data.message === "done") {
+        if (data.data) {
+          var arrayBufferView = new Uint8Array(
+            data.data.patientReport.filedata.data.data
+          );
+          const imageBlob = new Blob([arrayBufferView], {
+            type: "image/jpeg",
+          });
+          setShowImage(imageBlob);
+          setReport(data.data.patientReport.report);
+          setUserData((...val) => ({
+            name: data.data.patientData.name,
+            email: data.data.patientData.email,
+            radiologistName: data.data.radiologistData.name,
+          }));
+        } else {
+          alert("Data not found");
+        }
+      } else {
+        alert("Data not found");
+      }
+    } catch (e) {
+      alert("Error!!!");
+    }
+  };
+  useEffect(() => {
+    if (props.mode === "user") {
+      if (props.data.email) {
+        getPatientReport(props.data.email);
+      }
+    }
+  }, [props.mode == "user"]);
   return (
     <>
       <Modal
@@ -100,6 +173,18 @@ setReport(res.data.report);
                 <Spacer height="10vh" />
                 <Row>
                   <Col md={4}>
+                    {/* Input */}
+                    <Wrapper className="mb-4">
+                      <Form.Control
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                        }}
+                        value={email}
+                        type="email"
+                        placeholder="Enter email"
+                        style={{ width: "80%" }}
+                      />
+                    </Wrapper>
                     <Button
                       variant="contained"
                       component="label"
@@ -111,24 +196,28 @@ setReport(res.data.report);
                         accept="image/*"
                         type="file"
                         onChange={(event) => {
-                          setShowImage(event.target.files[0]);
+                          setShowImage(event?.target?.files[0]);
                           const formData = new FormData();
                           formData.append(
                             "Image",
-                            event.target.files[0],
-                            event.target.files[0].name
+                            event?.target?.files[0],
+                            event?.target?.files[0]?.name
                           );
                           setFile(formData);
                         }}
                       />
                     </Button>
+
                     {showImage && (
                       <Button
                         variant="contained"
                         component="label"
                         color="error"
                         className="ms-2"
-                        onClick={() => {setShowImage(null);setFile(null);}}
+                        onClick={() => {
+                          setShowImage(null);
+                          setFile(null);
+                        }}
                       >
                         Remove
                       </Button>
@@ -146,16 +235,23 @@ setReport(res.data.report);
                         <br />
                         <Wrapper>
                           <P className="mt-1" color="gray" size="12px">
-                            Click on Next to generate Report
+                            {regex.test(email)
+                              ? "Click on Next to generate Report"
+                              : "Fill email field and get Next Button to generate report"}
                           </P>
-                          <Button
-                            variant="contained"
-                            endIcon={<SendIcon />}
-                            sx={{ background: "#183e8f" }}
-                            onClick={GenerateReport}
-                          >
-                            Next
-                          </Button>
+                          {regex.test(email) ? (
+                            <Button
+                              variant="contained"
+                              endIcon={<SendIcon />}
+                              sx={{ background: "#183e8f" }}
+                              onClick={() => {
+                                setLoading(true);
+                                GenerateReport();
+                              }}
+                            >
+                              Next
+                            </Button>
+                          ) : null}
                         </Wrapper>
                       </Wrapper>
                     )}
@@ -171,7 +267,7 @@ setReport(res.data.report);
                       borderRadius="15px"
                     >
                       <P className="mb-0" size="12px">
-                        {report}
+                        {!loading ? report : "Loading..."}
                       </P>
                     </Wrapper>
                   </Col>
@@ -179,8 +275,69 @@ setReport(res.data.report);
               </Wrapper>
             </>
           ) : null}
+          {/* User  */}
           {props.mode === "user" ? (
-            <Wrapper className="mt-4">Radiologist</Wrapper>
+            <Wrapper className="mt-4">
+              <Spacer height="10vh" />
+              <Row>
+                <Col md={4}>
+                <Spacer height="25px" />
+                <P className="mb-5" size="24px" color="black" weight="600">Details:</P>
+                <Wrapper width="90%">
+                <Wrapper className="d-flex flex-row align-items-center justify-content-between">
+                  <Wrapper className="d-flex flex-column">
+                  <P weight="500">Patient Name is:</P>
+                      <P weight="500">Patient Email is:</P>
+                      <P weight="500">Radiologist Name is:</P>
+                  </Wrapper>
+                  <Wrapper className="d-flex flex-column">
+                  <P>{userData.name}</P>
+                      <P>{userData.email}</P>
+                      <P>{userData.radiologistName}</P>
+                  </Wrapper>
+                </Wrapper>
+                </Wrapper>
+                 
+                  <Button
+                  className="mt-3"
+                    variant="contained"
+                    sx={{ background: "#183e8f" }}
+                    onClick={() => {
+                      console.log("This is download");
+                    }}
+                  >
+                    Download
+                  </Button>
+                </Col>
+                <Col md={4} className="mt-5">
+                  <Wrapper>
+                    {showImage && (
+                      <img
+                        alt="not found"
+                        width={"70%"}
+                        style={{ border: "1px solid black" }}
+                        src={URL.createObjectURL(showImage)}
+                      />
+                    )}
+                  </Wrapper>
+                </Col>
+                <Col md={4} className="mt-5">
+                  <Wrapper
+                    className="p-3"
+                    width="70%"
+                    height="25vh"
+                    bg="black"
+                    border="1px solid gray"
+                    color="white"
+                    borderRadius="15px"
+                  >
+                    <P className="mb-0" size="12px">
+                      {!loading ? report : "Loading..."}
+                    </P>
+                  </Wrapper>
+                </Col>
+              </Row>
+            </Wrapper>
           ) : null}
         </Box>
       </Modal>

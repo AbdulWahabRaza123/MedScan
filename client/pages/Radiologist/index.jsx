@@ -34,7 +34,7 @@ const Index = () => {
         Router.push("/Login");
       } else {
         const info=await JSON.parse(login);
-        console.log("This is data ",info);
+     
         setData(info);
         setMount(true);
         NavDispatch({ type: "Nav", payload: "radiologist" });
@@ -85,7 +85,7 @@ const Index = () => {
         <Wrapper className="mt-4 mb-5">
           <h2 className="text-center text-bold">Services</h2>
           <Wrapper className="d-flex flex-row mt-5">
-            <CardComp mode={"radiologist"}/>
+            <CardComp mode={"radiologist"} data={data}/>
           </Wrapper>
         </Wrapper>
       </Container>
