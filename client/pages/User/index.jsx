@@ -6,6 +6,9 @@ import { NavContext } from "../_app";
 import { Carousel } from "react-responsive-carousel";
 import { Container, Row, Col, Wrapper } from "../../Components/Layout";
 import { BtnProfile } from "../../Components/Buttons";
+import { Spacer } from "../../Components/Spacer";
+import { P } from "../../Components/Typography";
+import Button from "@mui/material/Button";
 import CardComp from "../../Components/Card";
 import Loading from "../../Components/Loading";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -26,6 +29,14 @@ const Index = () => {
   const Router = useRouter();
   const [mount, setMount] = useState(false);
   const [data,setData]=useState(null);
+  const [showImage, setShowImage] = useState(null);
+  const [report, setReport] = useState("Hello...");
+  const [loading, setLoading] = useState(false);
+  const [userData, setUserData] = useState({
+    name: "",
+    email: "",
+    radiologistName: "",
+  });
   const { NavState, NavDispatch } = useContext(NavContext);
   const authUser = async () => {
     const res = await fetch("/authUser", {
@@ -61,6 +72,51 @@ const Index = () => {
   }
   verifyUser();
   }, []);
+  const getPatientReport = async (email) => {
+    try {
+      const res = await fetch("/getPatientReport", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+        }),
+        withCredentials: true,
+      });
+      const data = await res.json();
+      console.log("This is data ", data.data);
+      if (data.message === "done") {
+        if (data.data) {
+          var arrayBufferView = new Uint8Array(
+            data.data.patientReport.filedata.data.data
+          );
+          const imageBlob = new Blob([arrayBufferView], {
+            type: "image/jpeg",
+          });
+          setShowImage(imageBlob);
+          setReport(data.data.patientReport.report);
+          setUserData((...val) => ({
+            name: data.data.patientData.name,
+            email: data.data.patientData.email,
+            radiologistName: data.data.radiologistData.name,
+          }));
+        } else {
+          alert("Data not found");
+        }
+      } else {
+        alert("Data not found");
+        Router.push("/User/Logout");
+      }
+    } catch (e) {
+      alert("Error!!!");
+    }
+  };
+  useEffect(() => {
+      if (data?.email) {
+        getPatientReport(data.email);
+      }
+  }, [data]);
   return mount ? (
     <>
       <NavbarComp name={data.name}/>
@@ -104,7 +160,72 @@ const Index = () => {
         <Wrapper className="mt-4 mb-5">
           <h2 className="text-center text-bold">Services</h2>
           <Wrapper className="d-flex flex-row mt-5">
-            <CardComp mode="user" data={data}/>
+          {/* Card  */}
+            <CardComp mode="user" data={data}>
+            <Wrapper className="mt-4">
+              <Spacer height="10vh" />
+              <Row>
+                <Col md={4}>
+                  <Spacer height="25px" />
+                  <P className="mb-5" size="24px" color="black" weight="600">
+                    Details:
+                  </P>
+                  <Wrapper width="90%">
+                    <Wrapper className="d-flex flex-row align-items-center justify-content-between">
+                      <Wrapper className="d-flex flex-column">
+                        <P weight="500">Patient Name is:</P>
+                        <P weight="500">Patient Email is:</P>
+                        <P weight="500">Radiologist Name is:</P>
+                      </Wrapper>
+                      <Wrapper className="d-flex flex-column">
+                        <P>{userData.name}</P>
+                        <P>{userData.email}</P>
+                        <P>{userData.radiologistName}</P>
+                      </Wrapper>
+                    </Wrapper>
+                  </Wrapper>
+
+                  <Button
+                    className="mt-3"
+                    variant="contained"
+                    sx={{ background: "#183e8f" }}
+                    onClick={() => {
+                      console.log("This is download");
+                    }}
+                  >
+                    Download
+                  </Button>
+                </Col>
+                <Col md={4} className="mt-5">
+                  <Wrapper>
+                    {showImage && (
+                      <img
+                        alt="not found"
+                        width={"70%"}
+                        style={{ border: "1px solid black" }}
+                        src={URL.createObjectURL(showImage)}
+                      />
+                    )}
+                  </Wrapper>
+                </Col>
+                <Col md={4} className="mt-5">
+                  <Wrapper
+                    className="p-3"
+                    width="70%"
+                    height="25vh"
+                    bg="black"
+                    border="1px solid gray"
+                    color="white"
+                    borderRadius="15px"
+                  >
+                    <P className="mb-0" size="12px">
+                      {!loading ? report : "Loading..."}
+                    </P>
+                  </Wrapper>
+                </Col>
+              </Row>
+            </Wrapper>
+            </CardComp>
           </Wrapper>
         </Wrapper>
       </Container>
