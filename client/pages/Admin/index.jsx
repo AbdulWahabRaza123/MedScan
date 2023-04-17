@@ -18,17 +18,23 @@ const ImageStyle = {
 };
 const Index = () => {
   const [mount, setMount] = useState(false);
+  const [data,setData]=useState(null);
   const Router=useRouter();
   const { NavState, NavDispatch } = useContext(NavContext);
   useEffect(() => {
+    async function VerifyAdmin(){
     const login = localStorage.getItem("login");
     if (!login) {
       setMount(false);
       Router.push("/Login");
     } else {
+      const info=await JSON.parse(login);
+      setData(info);
       setMount(true);
       NavDispatch({ type: "Nav", payload: "admin" });
     }
+  }
+  VerifyAdmin();
   }, []);
   return mount ? (
     <>
@@ -76,7 +82,7 @@ const Index = () => {
         <Wrapper className="mt-4 mb-5">
           <h2 className="text-center text-bold">Services</h2>
           <Wrapper className="d-flex flex-row mt-5">
-            <CardComp />
+            <CardComp mode="admin" data={data}/>
           </Wrapper>
         </Wrapper>
       </Container>

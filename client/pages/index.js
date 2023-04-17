@@ -30,19 +30,19 @@ const Section2 = styles.div`
 `;
 const StepsCardData = [
   {
-    title: "Go to Services Page",
-    description: "Once your login you can get the report from services page",
+    title: "Login the system",
+    description: "Click on login button and fill information if you are already registered else register yourself.",
     color: "primary",
   },
   {
     title: "X-Ray Report",
     description:
-      "In Services page find X-Ray Report Section and click on go button. On next page you can see...",
+      "Services section and home tab containing the card of X-Rays Report Generation, click on Go here.",
     color: "success",
   },
   {
-    title: "Pending Title",
-    description: "...",
+    title: "Enjoy",
+    description: "Now get benafit of automated system.",
     color: "info",
   },
 ];

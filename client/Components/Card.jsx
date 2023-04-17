@@ -15,7 +15,9 @@ import SendIcon from "@mui/icons-material/Send";
 import { Row, Col, Wrapper } from "./Layout";
 import Form from "react-bootstrap/Form";
 import axios from "axios";
-import { P } from "./Typography";
+import { P, H5 } from "./Typography";
+import Tooltip from '@mui/material/Tooltip';
+import VaccinesIcon from '@mui/icons-material/Vaccines';
 const ContactCard = (props) => {
   return (
     <>
@@ -131,6 +133,7 @@ const CardComp = (props) => {
         }
       } else {
         alert("Data not found");
+        Router.push("/User/Logout");
       }
     } catch (e) {
       alert("Error!!!");
@@ -167,6 +170,7 @@ const CardComp = (props) => {
               onClick={handleClose}
             />
           </div>
+          {/* Radiologist */}
           {props.mode === "radiologist" ? (
             <>
               <Wrapper>
@@ -281,25 +285,27 @@ const CardComp = (props) => {
               <Spacer height="10vh" />
               <Row>
                 <Col md={4}>
-                <Spacer height="25px" />
-                <P className="mb-5" size="24px" color="black" weight="600">Details:</P>
-                <Wrapper width="90%">
-                <Wrapper className="d-flex flex-row align-items-center justify-content-between">
-                  <Wrapper className="d-flex flex-column">
-                  <P weight="500">Patient Name is:</P>
-                      <P weight="500">Patient Email is:</P>
-                      <P weight="500">Radiologist Name is:</P>
+                  <Spacer height="25px" />
+                  <P className="mb-5" size="24px" color="black" weight="600">
+                    Details:
+                  </P>
+                  <Wrapper width="90%">
+                    <Wrapper className="d-flex flex-row align-items-center justify-content-between">
+                      <Wrapper className="d-flex flex-column">
+                        <P weight="500">Patient Name is:</P>
+                        <P weight="500">Patient Email is:</P>
+                        <P weight="500">Radiologist Name is:</P>
+                      </Wrapper>
+                      <Wrapper className="d-flex flex-column">
+                        <P>{userData.name}</P>
+                        <P>{userData.email}</P>
+                        <P>{userData.radiologistName}</P>
+                      </Wrapper>
+                    </Wrapper>
                   </Wrapper>
-                  <Wrapper className="d-flex flex-column">
-                  <P>{userData.name}</P>
-                      <P>{userData.email}</P>
-                      <P>{userData.radiologistName}</P>
-                  </Wrapper>
-                </Wrapper>
-                </Wrapper>
-                 
+
                   <Button
-                  className="mt-3"
+                    className="mt-3"
                     variant="contained"
                     sx={{ background: "#183e8f" }}
                     onClick={() => {
@@ -338,6 +344,38 @@ const CardComp = (props) => {
                 </Col>
               </Row>
             </Wrapper>
+          ) : null}
+          {/* Admin  */}
+          {props.mode === "admin" ? (
+            <>
+              <Spacer height="10vh" />
+              <div>
+                <Row className="d-flex flex-column ">
+                  {/* <H5>Radiologists</H5> */}
+                  <Row>
+                  {
+                    [0,1,2,3,4].map((val,index)=>{
+                      return(
+                        <>
+                        <Col md={4}>
+                    <Wrapper className="d-flex flex-row">
+                      <StepsCard
+                      mode="admin_report_gen"
+                        title="Abdul Wahab Raza"
+                        description="New sensation"
+                      />
+                      </Wrapper>
+                    </Col>
+                        </>
+                      )
+                    })
+                  }
+                   
+                  
+                  </Row>
+                </Row>
+              </div>
+            </>
           ) : null}
         </Box>
       </Modal>
@@ -389,12 +427,25 @@ const StepsCard = (props) => {
           boxShadow: "5px 5px 10px gray",
         }}
       >
-        <Card.Body>
+        
+          <Card.Body>
+         
           <Card.Title style={{ color: "#183e8f", fontWeight: "600" }}>
             {props.title}
           </Card.Title>
           <Card.Text style={{ color: "gray" }}>{props.description}</Card.Text>
+          {
+          props.mode==="admin_report_gen"?<><Spacer height="20px"/>
+          <Wrapper className="d-flex flex-row">
+          <Tooltip title="Patients" >
+          <VaccinesIcon style={{color:"#183e8f",cursor:"pointer"}}/>
+          </Tooltip>
+          </Wrapper>
+          </>:null
+        }
         </Card.Body>
+        
+       
       </Card>
     </>
   );
