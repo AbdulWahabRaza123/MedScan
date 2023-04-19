@@ -47,17 +47,13 @@ const CardComp = (props) => {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: "100%",
+    width: props.width,
     bgcolor: "background.paper",
     boxShadow: 24,
-    height: "100vh",
+    height: props.height,
     overflow: "scroll",
     p: 2,
   };
-
-
-  
- 
   return (
     <>
       <Modal
@@ -75,7 +71,7 @@ const CardComp = (props) => {
             }}
           >
             <div>
-              <h2>Report Generation</h2>
+              <h2>{props.heading}</h2>
             </div>
             <CloseIcon
               style={{ cursor: "pointer", fontSize: "40px" }}
@@ -152,15 +148,19 @@ const StepsCard = (props) => {
               <Wrapper className="d-flex flex-row">
                 <Tooltip title="Patients">
                   <VaccinesIcon
+                  onClick={()=>{props.setOpenPatient(true)}}
                     style={{ color: "#183e8f", cursor: "pointer" }}
                   />
                 </Tooltip>
+                <div onClick={props.deleteRadiologist}>
                 <Tooltip className="ms-2" title="Delete Radiologist">
                   <DeleteOutlineIcon
+                  
                   className="pt-1"
                     style={{  color: "#183e8f", cursor: "pointer" }}
                   />
                 </Tooltip>
+                </div>
               </Wrapper>
             </>
           ) : null}

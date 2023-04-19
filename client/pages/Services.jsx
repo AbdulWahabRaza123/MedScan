@@ -22,7 +22,7 @@ const Services = () => {
         <ServicesStyle>
           <Row>
             <Col md={4}>
-              <CardComp restrict={true}/>
+              <CardComp restrict={true} height="100%" width="100%" heading="Services"/>
             </Col>
           </Row>
         </ServicesStyle>

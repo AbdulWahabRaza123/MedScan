@@ -6,12 +6,13 @@ import NavbarComp from "../../Components/Navbar";
 import { Carousel } from "react-responsive-carousel";
 import { BtnProfile } from "../../Components/Buttons";
 import CardComp,{StepsCard} from "../../Components/Card";
+import { P } from "../../Components/Typography";
 import Loading from "../../Components/Loading";
 import styles from "styled-components";
 import { useRouter } from "next/router";
 import { Spacer } from "../../Components/Spacer";
+import axios from "axios";
 const CarouselStyle = styles.span` 
-
 `;
 const ImageStyle = {
   width: "100%",
@@ -20,8 +21,29 @@ const ImageStyle = {
 const Index = () => {
   const [mount, setMount] = useState(false);
   const [data,setData]=useState(null);
+  const [radiologists,setRadiolologists]=useState([]);
+  const [openPatient,setOpenPatient]=useState(false);
   const Router=useRouter();
   const { NavState, NavDispatch } = useContext(NavContext);
+  const GetRadiologists = async () => {
+    try {
+
+        const res = await axios.get(
+          "/getRadiologists",
+        );
+        const data=res.data;
+        if (data.message === "done") {
+          setRadiolologists(data.data);
+        } else {
+        }
+     
+    } catch (e) {
+    console.log("This is error ",e);
+    }
+  };
+  const deleteRadiologist=(email)=>{
+    console.log("This is email ",email);
+  }
   useEffect(() => {
     async function VerifyAdmin(){
     const login = localStorage.getItem("login");
@@ -31,8 +53,10 @@ const Index = () => {
     } else {
       const info=await JSON.parse(login);
       setData(info);
-      setMount(true);
+      
       NavDispatch({ type: "Nav", payload: "admin" });
+      GetRadiologists();
+      setMount(true);
     }
   }
   VerifyAdmin();
@@ -83,21 +107,29 @@ const Index = () => {
         <Wrapper className="mt-4 mb-5">
           <h2 className="text-center text-bold">Services</h2>
           <Wrapper className="d-flex flex-row mt-5">
-            <CardComp mode="admin" data={data}>
+            <CardComp  width="100%" height="100%" heading="Admin">
             <Spacer height="10vh" />
-              <div>
-                <Row className="d-flex flex-column ">
-                  {/* <H5>Radiologists</H5> */}
+             
+              {
+                radiologists.length<=0?
+                <>
+                <Wrapper className="d-flex flex-row align-items-center justify-content-center" height="70vh">
+                <P color="gray" >Data Not Found</P>
+                </Wrapper></>:
+                <><Row className="d-flex flex-column ">
                   <Row>
-                    {[0, 1, 2, 3, 4].map((val, index) => {
+                    {radiologists.map((val, index) => {
                       return (
                         <>
-                          <Col md={4}>
+                          <Col md={4} key={index}>
                             <Wrapper className="d-flex flex-row">
                               <StepsCard
                                 mode="admin_report_gen"
-                                title="Abdul Wahab Raza"
-                                description="New sensation"
+                                title={val.name}
+                                description={val.specialization}
+                                openPatient={openPatient}
+                                setOpenPatient={setOpenPatient}
+                                deleteRadiologist={()=>{deleteRadiologist(val.email)}}
                               />
                             </Wrapper>
                           </Col>
@@ -105,8 +137,12 @@ const Index = () => {
                       );
                     })}
                   </Row>
-                </Row>
-              </div>
+                  </Row>
+                  </>
+                
+              }
+              
+             
             </CardComp>
           </Wrapper>
         </Wrapper>

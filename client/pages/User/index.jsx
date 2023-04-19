@@ -161,7 +161,7 @@ const Index = () => {
           <h2 className="text-center text-bold">Services</h2>
           <Wrapper className="d-flex flex-row mt-5">
           {/* Card  */}
-            <CardComp mode="user" data={data}>
+            <CardComp  width="100%" height="100%" heading="Patient">
             <Wrapper className="mt-4">
               <Spacer height="10vh" />
               <Row>

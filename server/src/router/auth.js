@@ -3,6 +3,12 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const app = express();
 const cookieParser = require("cookie-parser");
+const bodyParser = require('body-parser');
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
 const multer = require("multer");
 const fs = require("fs");
 app.use(cookieParser());
@@ -252,15 +258,81 @@ router.post("/login", async (req, res) => {
     return res.json({ message: "error", type: "unknown error" });
   }
 });
-router.post("/GenerateReport",upload.single("Image"),async(req,res)=>{
+router.post("/GenerateReport",upload.single("file"),async(req,res)=>{
   try {
-    const {email}=req.body;
+    const {patientEmail,radiologistEmail}=req.body;
+    const patientData = await Patient.findOne({ email:patientEmail });
+    const radiologstData=await Radiologist.findOne({email:radiologistEmail});
+    const patientReport = await Report.findOne({ patientEmail });
+    if(patientData && radiologistEmail && !patientReport ){
+      const data = await new Report({
+        patientEmail:patientData.email,
+        radiologistEmail:radiologstData.email,
+        filedata: {
+          data: fs.readFileSync("uploads/temp.jpg"),
+          contentType: "image/jpeg",
+        },
+        report:"This is report from backend..."
+      });
+      if(data){
+        const patientReport=await data.save();
+        res.status(200).json({ message: "done", report: "This is report from backend..." });
+      }else{
+        res.json({ message: "error",type:"Error in database"});
+      }
     
-    res.status(200).json({ message: "done", report: "This is report from backend..." });
+    }else{
+      res.status(404).json({ message: "error",type:"Data not found"});
+    }
   }catch(e){
     return res.status(401).json({ message: "error", type: "unknown error" });
   }
 
+})
+router.post("/getPatientReport",authUser,async(req,res)=>{
+  
+ try{
+  
+  const {email}=req.body;
+  if(email){
+    const patientReport = await Report.findOne({ patientEmail:email });
+    if(patientReport){
+      const radiologistData=await Radiologist.findOne({email:patientReport.radiologistEmail});
+      const patientData=await Patient.findOne({email:patientReport.patientEmail});
+      if(radiologistData&&patientData){
+    res.status(200).json({ message: "done",data:{patientReport,radiologistData,patientData} });
+      }
+      else{
+        res.status(404).json({ message: "error",type:"Data not found"});
+      }
+    }else{
+      res.status(404).json({ message: "error",type:"Data not found"});
+    }
+  }
+  else{
+    res.status(404).json({ message: "error",type:"Patient not found"});
+  }
+  
+ }
+ catch(e){
+  return res.status(401).json({ message: "error", type: "unknown error" });
+ }
+})
+router.get("/getRadiologists",authAdmin,async(req,res)=>{
+  try{
+const radiologists=await Radiologist.find();
+if(radiologists){
+let customRadio=[];
+for(let i=0;i<radiologists.length;i++){
+  customRadio.push({name:radiologists[i].name,email:radiologists[i].email,specialization:radiologists[i].specialization})
+}
+res.status(200).json({message:"done",data:customRadio});
+}else{
+  res.status(404).json({ message: "error",type:"Data not found"});
+}
+  }catch(e){
+    res.status(404).json({ message: "error",type:"Data not found"});
+  }
 })
 router.get("/AdminLogout", authAdmin, (req, res) => {
   if (req.cookies.jwToken) {

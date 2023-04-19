@@ -40,40 +40,20 @@ const Index = () => {
   const [showImage, setShowImage] = useState(null);
   const [report, setReport] = useState("Hello...");
   const { NavState, NavDispatch } = useContext(NavContext);
-  const UploadImage=async(image)=>{
-try{
-  if (image) {
-    const formData = new FormData();
-    formData.append("file", image);
-    const boundary = `----${new Date().getTime()}`;
-    const url="/UploadImage";
-    axios
-    .post(url, formData, {
-      headers: {
-        "Content-Type": `multipart/form-data; boundary=${boundary}`,
-      },
-    })
-    .then((res) => {
-      
-    })
-    .catch((e) => {
-      alert("Upload Image Again!!!");
-    });
-  }
-}catch(e){
-  console.log("This is error ",e);
-}
-  }
   const GenerateReport = async () => {
     try {
-      if (email) {
-      
+      if (email && showImage) {
+        const formData = new FormData();
+        formData.append("file", showImage);
+        formData.append("patientEmail",email);
+        formData.append("radiologistEmail",data.email);
+        const boundary = `----${new Date().getTime()}`;
         const res = await axios.post(
           "/GenerateReport",
-          {  patientEmail: email, radiologistEmail: data.email },
+          formData,
           {
             headers: {
-              "Content-Type": "application/json",
+              "Content-Type":`multipart/form-data; boundary=${boundary}`,
             },
           }
         );
@@ -99,7 +79,6 @@ try{
   };
   useEffect(() => {
     async function verifyRadiologist() {
-      // authRadiologist();
       const login = localStorage.getItem("login");
       if (!login) {
         setMount(false);
@@ -151,7 +130,7 @@ try{
         <Wrapper className="mt-4 mb-5">
           <h2 className="text-center text-bold">Services</h2>
           <Wrapper className="d-flex flex-row mt-5">
-            <CardComp mode={"radiologist"} data={data}>
+            <CardComp width="100%" height="100%" heading="Radiologist">
               <Wrapper>
                 <Spacer height="10vh" />
                 <Row>
@@ -180,15 +159,7 @@ try{
                         type="file"
                         onChange={(event) => {
                           if (event.target.files[0]) {
-                            UploadImage(event.target.files[0]);
                             setShowImage(event.target.files[0]);
-                            // const formData = new FormData();
-                            // formData.append(
-                            //   "file",
-                            //   event.target.files[0]
-                            // );
-                            // formData.append("ImageName",  event.target.files[0].name);
-                            // setFile(formData);
                           }
                           else{
                             alert("Upload Again!!!");
