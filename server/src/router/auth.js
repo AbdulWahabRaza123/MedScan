@@ -193,7 +193,6 @@ router.post("/login", async (req, res) => {
         res
           .cookie("jwToken", token, {
             key: "user",
-            maxAge: 2 * 60 * 60 * 1000,
             httpOnly: true,
             sameSite: "strict",
             secure: true,
@@ -214,7 +213,6 @@ router.post("/login", async (req, res) => {
           res
             .cookie("jwToken", token, {
               key: "radiologist",
-              maxAge: 2 * 60 * 60 * 1000,
               httpOnly: true,
               sameSite: "strict",
               secure: true,
@@ -236,7 +234,6 @@ router.post("/login", async (req, res) => {
             res
               .cookie("jwToken", token, {
                 key: "admin",
-                maxAge: 2 * 60 * 60 * 1000,
                 httpOnly: true,
                 sameSite: "strict",
                 secure: true,
@@ -262,12 +259,14 @@ router.post("/GenerateReport",upload.single("file"),async(req,res)=>{
   try {
     const {patientEmail,radiologistEmail}=req.body;
     const patientData = await Patient.findOne({ email:patientEmail });
-    const radiologstData=await Radiologist.findOne({email:radiologistEmail});
+    const radiologistData=await Radiologist.findOne({email:radiologistEmail});
     const patientReport = await Report.findOne({ patientEmail });
     if(patientData && radiologistEmail && !patientReport ){
       const data = await new Report({
         patientEmail:patientData.email,
-        radiologistEmail:radiologstData.email,
+        patientName:patientData.name,
+        radiologistEmail:radiologistData.email,
+        radiologistName:radiologistData.name,
         filedata: {
           data: fs.readFileSync("uploads/temp.jpg"),
           contentType: "image/jpeg",
@@ -318,6 +317,20 @@ router.post("/getPatientReport",authUser,async(req,res)=>{
   return res.status(401).json({ message: "error", type: "unknown error" });
  }
 })
+router.get("/getReports",authAdmin,async(req,res)=>{
+  
+  try{
+     const patientReport = await Report.find({});
+     if(patientReport){    
+     res.status(200).json({ message: "done",data:patientReport }); 
+     }else{
+       res.status(404).json({ message: "error",type:"Data not found"});
+     }
+   }
+  catch(e){
+   return res.status(401).json({ message: "error", type: "unknown error" });
+  }
+ })
 router.get("/getRadiologists",authAdmin,async(req,res)=>{
   try{
 const radiologists=await Radiologist.find();

@@ -31,6 +31,7 @@ const Index = () => {
   const [data,setData]=useState(null);
   const [showImage, setShowImage] = useState(null);
   const [report, setReport] = useState("Hello...");
+  const [gotReport,setGotReport]=useState(false);
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState({
     name: "",
@@ -85,7 +86,6 @@ const Index = () => {
         withCredentials: true,
       });
       const data = await res.json();
-      console.log("This is data ", data.data);
       if (data.message === "done") {
         if (data.data) {
           var arrayBufferView = new Uint8Array(
@@ -101,12 +101,14 @@ const Index = () => {
             email: data.data.patientData.email,
             radiologistName: data.data.radiologistData.name,
           }));
+          setGotReport(true);
         } else {
           alert("Data not found");
         }
       } else {
-        alert("Data not found");
-        Router.push("/User/Logout");
+        setGotReport(false);
+        // alert("Data not found");
+        // Router.push("/User/Logout");
       }
     } catch (e) {
       alert("Error!!!");
@@ -160,16 +162,19 @@ const Index = () => {
         <Wrapper className="mt-4 mb-5">
           <h2 className="text-center text-bold">Services</h2>
           <Wrapper className="d-flex flex-row mt-5">
-          {/* Card  */}
+          {/* Modal  */}
             <CardComp  width="100%" height="100%" heading="Patient">
             <Wrapper className="mt-4">
               <Spacer height="10vh" />
-              <Row>
+              {
+                    gotReport?<>
+                    <Row>
                 <Col md={4}>
                   <Spacer height="25px" />
                   <P className="mb-5" size="24px" color="black" weight="600">
                     Details:
                   </P>
+                
                   <Wrapper width="90%">
                     <Wrapper className="d-flex flex-row align-items-center justify-content-between">
                       <Wrapper className="d-flex flex-column">
@@ -224,6 +229,13 @@ const Index = () => {
                   </Wrapper>
                 </Col>
               </Row>
+                    </>:<>
+                      <Wrapper className="d-flex flex-row align-items-center justify-content-center" height="70vh">
+                        <P color="gray">Data Not Found</P>
+                      </Wrapper>
+                    </>
+                  }
+             
             </Wrapper>
             </CardComp>
           </Wrapper>

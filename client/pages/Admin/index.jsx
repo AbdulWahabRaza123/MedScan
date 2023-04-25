@@ -1,16 +1,19 @@
 import React, { useState, useEffect, useContext } from "react";
 import { NavContext } from "../_app";
-import { Container, Row, Col, Wrapper } from "../../Components/Layout";
+import { Container, Row, Col, Wrapper,useMediaQuery } from "../../Components/Layout";
+import { MDBInput } from "../../Components/Inputs";
 import Footer from "../../Components/Footer";
 import NavbarComp from "../../Components/Navbar";
 import { Carousel } from "react-responsive-carousel";
 import { BtnProfile } from "../../Components/Buttons";
-import CardComp,{StepsCard} from "../../Components/Card";
+import CardComp,{StepsCard,PatientsInfoCard} from "../../Components/Card";
 import { P } from "../../Components/Typography";
 import Loading from "../../Components/Loading";
 import styles from "styled-components";
 import { useRouter } from "next/router";
 import { Spacer } from "../../Components/Spacer";
+import ModalComp from "../../Components/Modal";
+import SearchIcon from '@mui/icons-material/Search';
 import axios from "axios";
 const CarouselStyle = styles.span` 
 `;
@@ -19,10 +22,15 @@ const ImageStyle = {
   border: "1px solid black",
 };
 const Index = () => {
+  const isResponsive = useMediaQuery({
+    query: "(max-width: 453px)",
+  });
   const [mount, setMount] = useState(false);
   const [data,setData]=useState(null);
   const [radiologists,setRadiolologists]=useState([]);
+  const [reports,setReports]=useState([]);
   const [openPatient,setOpenPatient]=useState(false);
+  const [accordian,setAccordian]=useState(false);
   const Router=useRouter();
   const { NavState, NavDispatch } = useContext(NavContext);
   const GetRadiologists = async () => {
@@ -34,6 +42,23 @@ const Index = () => {
         const data=res.data;
         if (data.message === "done") {
           setRadiolologists(data.data);
+        } else {
+        }
+     
+    } catch (e) {
+    console.log("This is error ",e);
+    }
+  };
+  const GetReports = async () => {
+    try {
+
+        const res = await axios.get(
+          "/getReports",
+        );
+        const data=res.data;
+        if (data.message === "done") {
+          setReports(data.data);
+          console.log("These are reports ",data.data);
         } else {
         }
      
@@ -53,9 +78,9 @@ const Index = () => {
     } else {
       const info=await JSON.parse(login);
       setData(info);
-      
       NavDispatch({ type: "Nav", payload: "admin" });
       GetRadiologists();
+      GetReports();
       setMount(true);
     }
   }
@@ -63,6 +88,43 @@ const Index = () => {
   }, []);
   return mount ? (
     <>
+    <ModalComp className={isResponsive?"p-1":""} heading="Patients" width={isResponsive?"100%":"450px"} height={isResponsive?"100vh":"70%"} open={openPatient} handleClose={()=>{setOpenPatient(false)}}>
+    <Spacer className="mt-2"/>
+    <Wrapper style={{position:"relative",zIndex:"1"}}>
+    <MDBInput placeholder="Search" style={{position:"relative"}}/>
+    <SearchIcon style={{position:"absolute",right:"2%",top:"20%",cursor:"pointer"}}/>
+    </Wrapper>
+    <Wrapper style={{maxHeight:isResponsive?"100vh":"340px",overflow:"scroll",zIndex:"0"}}>
+    {
+      reports.length===0?<>
+      
+     <Wrapper className="d-flex flex-row align-items-center justify-content-center mb-0" height={isResponsive?"70vh":"300px"}>
+          <P color="gray">No Data Found</P>
+          </Wrapper>
+      </>:<>
+        {
+          reports.map((val,index)=>{
+            return(
+              <>             
+              <PatientsInfoCard key={index} mode="accordian" name="Raza" email={val.patientEmail}/>
+              </>
+            )
+          })
+        }
+      </>
+    }
+    {/* <PatientsInfoCard mode="accordian" name="Raza" email="raza@gmail.com"/>
+    <PatientsInfoCard mode="accordian"  name="Raza" email="raza@gmail.com"/>
+    <PatientsInfoCard mode="accordian" name="Raza" email="raza@gmail.com"/>
+    <PatientsInfoCard mode="accordian" name="Raza" email="raza@gmail.com"/>
+    <PatientsInfoCard mode="accordian" name="Raza" email="raza@gmail.com"/>
+    <PatientsInfoCard mode="accordian" name="Raza" email="raza@gmail.com"/>
+    <PatientsInfoCard mode="accordian" name="Raza" email="raza@gmail.com"/>
+    <PatientsInfoCard mode="accordian" name="Raza" email="raza@gmail.com"/>
+    <PatientsInfoCard mode="accordian" name="Raza" email="raza@gmail.com"/>
+    <PatientsInfoCard mode="accordian" name="Raza" email="raza@gmail.com"/> */}
+    </Wrapper>
+    </ModalComp>
       <NavbarComp />
       <Container style={{ marginTop: "20vh" }}>
         <Row className="pb-5">

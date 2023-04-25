@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { Spacer } from "./Spacer";
+import { Row, Col, Wrapper, useMediaQuery } from "./Layout";
+import { P } from "./Typography";
 import MaterialCard from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -10,15 +12,12 @@ import Typography from "@mui/material/Typography";
 import Card from "react-bootstrap/Card";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import CloseIcon from "@mui/icons-material/Close";
-import SendIcon from "@mui/icons-material/Send";
-import { Row, Col, Wrapper,useMediaQuery } from "./Layout";
-import Form from "react-bootstrap/Form";
-import axios from "axios";
-import { P, H5 } from "./Typography";
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import Tooltip from "@mui/material/Tooltip";
 import VaccinesIcon from "@mui/icons-material/Vaccines";
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import CloseIcon from "@mui/icons-material/Close";
 const ContactCard = (props) => {
   return (
     <>
@@ -79,7 +78,6 @@ const CardComp = (props) => {
             />
           </div>
           {props.children}
-   
         </Box>
       </Modal>
       <MaterialCard
@@ -120,55 +118,127 @@ const CardComp = (props) => {
 };
 const StepsCard = (props) => {
   const isResponsive = useMediaQuery({
-    query: '(max-width: 453px)'
-  })
+    query: "(max-width: 453px)",
+  });
   return (
     <>
       <Card
         className="mt-4"
         style={{
           width: "100%",
-          height: "150px",
+          height: "auto",
           overflow: "auto",
           boxShadow: "5px 5px 10px gray",
         }}
       >
-      <div className={props.mode === "admin_report_gen"?"ps-2 d-flex flex-row align-items-center":""}>
-      {
-        props.mode === "admin_report_gen"&&!isResponsive?<img className="img-fluid" src="/assets/profile.jpg" alt="Profile" width="120px" height="120px"/>:null
-      }
-        <Card.Body>
-          <Card.Title style={{ color: "#183e8f", fontWeight: "600" }}>
-            {props.title}
-          </Card.Title>
-          <Card.Text style={{ color: "gray" }}>{props.description}</Card.Text>
-          {props.mode === "admin_report_gen" ? (
-            <>
-              <Spacer height="20px" />
-              <Wrapper className="d-flex flex-row">
-                <Tooltip title="Patients">
-                  <VaccinesIcon
-                  onClick={()=>{props.setOpenPatient(true)}}
-                    style={{ color: "#183e8f", cursor: "pointer" }}
-                  />
-                </Tooltip>
-                <div onClick={props.deleteRadiologist}>
-                <Tooltip className="ms-2" title="Delete Radiologist">
-                  <DeleteOutlineIcon
-                  
-                  className="pt-1"
-                    style={{  color: "#183e8f", cursor: "pointer" }}
-                  />
-                </Tooltip>
-                </div>
-              </Wrapper>
-            </>
+        <div
+          className={
+            props.mode === "admin_report_gen"
+              ? "ps-2 d-flex flex-row align-items-center"
+              : ""
+          }
+        >
+          {props.mode === "admin_report_gen" && !isResponsive ? (
+            <img
+              className="img-fluid"
+              src="/assets/profile.jpg"
+              alt="Profile"
+              width="120px"
+              height="120px"
+            />
           ) : null}
-        </Card.Body>
+          <Card.Body>
+            <Card.Title style={{ color: "#183e8f", fontWeight: "600" }}>
+              {props.title}
+            </Card.Title>
+            <Card.Text style={{ color: "gray" }}>{props.description}</Card.Text>
+            {props.mode === "admin_report_gen" ? (
+              <>
+                <Spacer height="20px" />
+                <Wrapper className="d-flex flex-row">
+                  <Tooltip title="Reports">
+                    <VaccinesIcon
+                      onClick={() => {
+                        props.setOpenPatient(true);
+                      }}
+                      style={{ color: "#183e8f", cursor: "pointer" }}
+                    />
+                  </Tooltip>
+                  <div onClick={props.deleteRadiologist}>
+                    <Tooltip className="ms-2" title="Delete Radiologist">
+                      <DeleteOutlineIcon
+                        className="pt-1"
+                        style={{ color: "#183e8f", cursor: "pointer" }}
+                      />
+                    </Tooltip>
+                  </div>
+                </Wrapper>
+              </>
+            ) : null}
+          </Card.Body>
         </div>
       </Card>
     </>
   );
 };
-export { StepsCard, ContactCard };
+const PatientsInfoCard = (props) => {
+  const [accordian,setAccordian]=useState(false);
+  const isResponsive = useMediaQuery({
+    query: "(max-width: 453px)",
+  });
+  return (
+    <>
+      <Card
+        className="mt-4"
+        style={{
+          width: "100%",
+          height: "auto",
+          overflow: "auto",
+        }}
+      >
+        <div className="ps-2 d-flex flex-row align-items-center">
+          <Card.Body>
+            <Card.Title style={{ fontWeight: "600" }}>{props.name}</Card.Title>
+            <Wrapper className="d-flex flex-row align-items-center justify-content-between">
+              <Card.Text className="mb-0" style={{ color: "gray" }}>
+                {props.email}
+              </Card.Text>
+              <Wrapper className="d-flex">
+              <div>
+                  <Tooltip title="Read Report">
+                    <AssessmentIcon
+                    onClick={()=>{setAccordian(true)}}
+                      style={{ color: "gray", cursor: "pointer" }}
+                    />
+                  </Tooltip>
+                </div>
+                <div>
+                  <Tooltip title="Delete Patient">
+                    <DeleteOutlineIcon
+                      style={{ color: "gray", cursor: "pointer" }}
+                    />
+                  </Tooltip>
+                </div>
+              </Wrapper>
+            </Wrapper>
+          </Card.Body>
+          
+        </div>    
+      </Card> 
+      {
+        props.mode==="accordian" && accordian?<>
+        <Card style={{boxShadow: "1px 1px 3px gray"}}>
+      <div className="d-flex flex-row align-items-center justify-content-end" style={{width:"100%"}}>
+        <ArrowDropUpIcon onClick={()=>{setAccordian(false)}} style={{cursor:"pointer"}}/>
+      </div>
+      <Card.Body>
+      <P className="mb-0" color="gray">This is Report from backend....</P>
+      </Card.Body>
+      </Card>
+        </>:null
+      }
+    </>
+  );
+};
+export { StepsCard, ContactCard, PatientsInfoCard };
 export default CardComp;

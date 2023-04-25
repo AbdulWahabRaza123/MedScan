@@ -85,7 +85,6 @@ const Index = () => {
         Router.push("/Login");
       } else {
         const info = await JSON.parse(login);
-
         setData(info);
         setMount(true);
         NavDispatch({ type: "Nav", payload: "radiologist" });
