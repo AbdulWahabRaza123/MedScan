@@ -33,11 +33,12 @@ const Index = () => {
   const [report, setReport] = useState("Hello...");
   const [gotReport,setGotReport]=useState(false);
   const [loading, setLoading] = useState(false);
-  const [userData, setUserData] = useState({
-    name: "",
-    email: "",
-    radiologistName: "",
-  });
+  // const [userData, setUserData] = useState({
+  //   name: "",
+  //   email: "",
+  //   radiologistName: "",
+  // });
+  const [userData, setUserData] = useState([]);
   const { NavState, NavDispatch } = useContext(NavContext);
   const authUser = async () => {
     const res = await fetch("/authUser", {
@@ -86,22 +87,49 @@ const Index = () => {
         withCredentials: true,
       });
       const data = await res.json();
+      
       if (data.message === "done") {
-        if (data.data) {
-          var arrayBufferView = new Uint8Array(
-            data.data.patientReport.filedata.data.data
+        const userInfo=data.data;
+        if (userInfo) {
+          // console.log("This is data ",userInfo );
+          // console.log("Now Process This data...");
+          // console.log("Length of data is ",userInfo.length);
+          for(let i=0;i<userInfo.length;i++){
+            var arrayBufferView = new Uint8Array(
+              userInfo[i].reports.filedata.data.data
           );
           const imageBlob = new Blob([arrayBufferView], {
             type: "image/jpeg",
           });
-          setShowImage(imageBlob);
-          setReport(data.data.patientReport.report);
-          setUserData((...val) => ({
-            name: data.data.patientData.name,
-            email: data.data.patientData.email,
-            radiologistName: data.data.radiologistData.name,
-          }));
+          setUserData((val)=>
+            [...val,{
+                radiologistEmail:userInfo[i].radiologistEmail,
+                radiologistName:userInfo[i].radiologistName,
+                image:imageBlob,
+                patientEmail:userInfo[i].reports.patientEmail,
+                patientName:userInfo[i].reports.patientName,
+                report:userInfo[i].reports.report,
+              }
+            ]
+          )
+            
+          }
+          console.log("User Data is ",userData);
           setGotReport(true);
+          // var arrayBufferView = new Uint8Array(
+          //   data.data.patientReport.filedata.data.data
+          // );
+          // const imageBlob = new Blob([arrayBufferView], {
+          //   type: "image/jpeg",
+          // });
+          // setShowImage(imageBlob);
+          // setReport(data.data.patientReport.report);
+          // setUserData((...val) => ({
+          //   name: data.data.patientData.name,
+          //   email: data.data.patientData.email,
+          //   radiologistName: data.data.radiologistData.name,
+          // }));
+          // setGotReport(true);
         } else {
           alert("Data not found");
         }
@@ -119,6 +147,9 @@ const Index = () => {
         getPatientReport(data.email);
       }
   }, [data]);
+  useEffect(()=>{
+console.log("This is user data ",userData.length);
+  },[userData])
   return mount ? (
     <>
       <NavbarComp name={data.name}/>
@@ -162,13 +193,21 @@ const Index = () => {
         <Wrapper className="mt-4 mb-5">
           <h2 className="text-center text-bold">Services</h2>
           <Wrapper className="d-flex flex-row mt-5">
-          {/* Modal  */}
             <CardComp  width="100%" height="100%" heading="Patient">
             <Wrapper className="mt-4">
               <Spacer height="10vh" />
               {
                     gotReport?<>
-                    <Row>
+                    {
+                      Array.isArray(userData) &&userData.map((val,index)=>{
+                        return(
+                          <>
+                          <P color="black">Hello World</P>
+                          </>
+                        )
+                      })
+                    }
+                    {/* <Row>
                 <Col md={4}>
                   <Spacer height="25px" />
                   <P className="mb-5" size="24px" color="black" weight="600">
@@ -228,7 +267,7 @@ const Index = () => {
                     </P>
                   </Wrapper>
                 </Col>
-              </Row>
+              </Row> */}
                     </>:<>
                       <Wrapper className="d-flex flex-row align-items-center justify-content-center" height="70vh">
                         <P color="gray">Data Not Found</P>

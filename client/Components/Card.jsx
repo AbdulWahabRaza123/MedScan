@@ -232,7 +232,7 @@ const PatientsInfoCard = (props) => {
         <ArrowDropUpIcon onClick={()=>{setAccordian(false)}} style={{cursor:"pointer"}}/>
       </div>
       <Card.Body>
-      <P className="mb-0" color="gray">This is Report from backend....</P>
+      <P className="mb-0" color="gray">{props.report}</P>
       </Card.Body>
       </Card>
         </>:null

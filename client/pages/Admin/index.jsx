@@ -104,9 +104,10 @@ const Index = () => {
       </>:<>
         {
           reports.map((val,index)=>{
+            console.log("This is report ",val);
             return(
               <>             
-              <PatientsInfoCard key={index} mode="accordian" name="Raza" email={val.patientEmail}/>
+              <PatientsInfoCard key={index} mode="accordian" name={val.patientName} email={val.patientEmail} report={val.report}/>
               </>
             )
           })
@@ -125,7 +126,7 @@ const Index = () => {
     <PatientsInfoCard mode="accordian" name="Raza" email="raza@gmail.com"/> */}
     </Wrapper>
     </ModalComp>
-      <NavbarComp />
+      <NavbarComp name={data.name}/>
       <Container style={{ marginTop: "20vh" }}>
         <Row className="pb-5">
           <Col sm={6} md={6}>
@@ -189,6 +190,7 @@ const Index = () => {
                                 mode="admin_report_gen"
                                 title={val.name}
                                 description={val.specialization}
+                                email={val.email}
                                 openPatient={openPatient}
                                 setOpenPatient={setOpenPatient}
                                 deleteRadiologist={()=>{deleteRadiologist(val.email)}}

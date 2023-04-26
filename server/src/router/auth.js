@@ -260,18 +260,25 @@ router.post("/GenerateReport",upload.single("file"),async(req,res)=>{
     const {patientEmail,radiologistEmail}=req.body;
     const patientData = await Patient.findOne({ email:patientEmail });
     const radiologistData=await Radiologist.findOne({email:radiologistEmail});
-    const patientReport = await Report.findOne({ patientEmail });
-    if(patientData && radiologistEmail && !patientReport ){
+    const patientReport = await Report.findOne({ 'reports.patientEmail':patientEmail });
+    const radiologistExist = await Report.findOne({ radiologistEmail });
+    if(patientData && radiologistEmail &&!radiologistExist ){
+      console.log("I am here ");
       const data = await new Report({
-        patientEmail:patientData.email,
-        patientName:patientData.name,
         radiologistEmail:radiologistData.email,
         radiologistName:radiologistData.name,
+        reports:[
+          {
+        patientEmail:patientData.email,
+        patientName:patientData.name,
+        
         filedata: {
           data: fs.readFileSync("uploads/temp.jpg"),
           contentType: "image/jpeg",
         },
         report:"This is report from backend..."
+      }
+      ]
       });
       if(data){
         const patientReport=await data.save();
@@ -280,7 +287,66 @@ router.post("/GenerateReport",upload.single("file"),async(req,res)=>{
         res.json({ message: "error",type:"Error in database"});
       }
     
-    }else{
+    }else if(radiologistEmail&&radiologistExist&&!patientReport){
+      Report.updateOne({
+        radiologistEmail: radiologistData.email,
+      }, {
+        $push: {
+          reports: {
+            patientEmail: patientData.email,
+            patientName: patientData.name,
+            filedata: {
+              data: fs.readFileSync("uploads/temp.jpg"),
+              contentType: 'image/jpeg',
+            },
+            report: 'Patient has a broken leg'
+          }
+        }
+
+      }, (err, result) => {
+        if (err) {
+          console.error(err);
+          res.json({ message: "error",type:"Error in database"});
+        } else {
+          console.log('Report added successfully');
+          res.status(200).json({ message: "done", report: "Patient has a broken leg" });
+        }
+      });
+    }
+    else if(radiologistEmail&&patientReport&&radiologistExist){
+      Report.findOneAndUpdate(
+        {
+          radiologistEmail:  radiologistData.email,
+          'reports.patientEmail': patientData.email,
+        },
+        {
+          $set: {
+            'reports.$.report': 'Patient has a broken arm',
+            'reports.$.filedata': {
+              data: fs.readFileSync("uploads/temp.jpg"), // actual buffer data
+              contentType: 'image/jpeg', // file type
+            }
+          }
+        },
+        {
+          new: true,
+          useFindAndModify: false
+        },
+        (err, updatedReport) => {
+          if (err) {
+            console.error(err);
+          } else if (!updatedReport) {
+            console.log('No matching report found');
+            res.json({ message: "error",type:"No Matching found"});
+          } else {
+            console.log('Report updated successfully');
+            res.status(200).json({ message: "done", report: "Patient has a broken arm" });
+          }
+        }
+      );
+
+    }
+    else{
       res.status(404).json({ message: "error",type:"Data not found"});
     }
   }catch(e){
@@ -294,16 +360,25 @@ router.post("/getPatientReport",authUser,async(req,res)=>{
   
   const {email}=req.body;
   if(email){
-    const patientReport = await Report.findOne({ patientEmail:email });
+    const patientReport = await Report.find({ 'reports.patientEmail':email });
     if(patientReport){
       const radiologistData=await Radiologist.findOne({email:patientReport.radiologistEmail});
-      const patientData=await Patient.findOne({email:patientReport.patientEmail});
-      if(radiologistData&&patientData){
-    res.status(200).json({ message: "done",data:{patientReport,radiologistData,patientData} });
-      }
-      else{
-        res.status(404).json({ message: "error",type:"Data not found"});
-      }
+      const patientData=await Report.aggregate([
+        { $match: { "reports.patientEmail": email } },
+        // Then, use the $unwind operator to create a separate document for each report of each matching document
+        { $unwind: "$reports" },
+        // Next, match only the reports that have the patient email you want to search for
+        { $match: { "reports.patientEmail": email } },
+        // Finally, project only the fields you need (in this case, the radiologist email and name, and the patient name and report)
+        // { $project: { _id: 0, radiologistEmail: 1, radiologistName: 1, "reports.patientName": 1,"reports.patientEmail": 1, "reports.fileData": 1,"reports.report": 1 } }
+      ], function(err, result) {
+        if (err) {
+          res.status(404).json({ message: "error",type:"Data not found"});
+        } else {
+          res.status(200).json({ message: "done",data:result });
+          
+        }
+      });
     }else{
       res.status(404).json({ message: "error",type:"Data not found"});
     }
