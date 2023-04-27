@@ -12,11 +12,13 @@ import Typography from "@mui/material/Typography";
 import Card from "react-bootstrap/Card";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import Tooltip from "@mui/material/Tooltip";
 import VaccinesIcon from "@mui/icons-material/Vaccines";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import AssessmentIcon from '@mui/icons-material/Assessment';
+import AssessmentIcon from "@mui/icons-material/Assessment";
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import CloseIcon from "@mui/icons-material/Close";
 const ContactCard = (props) => {
   return (
@@ -120,6 +122,8 @@ const StepsCard = (props) => {
   const isResponsive = useMediaQuery({
     query: "(max-width: 453px)",
   });
+  const [patientData, setPatientData] = useState(false);
+
   return (
     <>
       <Card
@@ -129,6 +133,7 @@ const StepsCard = (props) => {
           height: "auto",
           overflow: "auto",
           boxShadow: "5px 5px 10px gray",
+          
         }}
       >
         <div
@@ -147,11 +152,65 @@ const StepsCard = (props) => {
               height="120px"
             />
           ) : null}
-          <Card.Body>
+          <Card.Body >
+          
             <Card.Title style={{ color: "#183e8f", fontWeight: "600" }}>
               {props.title}
+             
             </Card.Title>
-            <Card.Text style={{ color: "gray" }}>{props.description}</Card.Text>
+            <Card.Text className="mb-0" style={{ color: "gray" }}>{props.description}</Card.Text>
+            {patientData && props.mode === "patient_report"&&<>
+            <Wrapper className="d-flex flex-row align-items-center justify-content-end mt-2" width="100%">
+              <ArrowDropUpIcon onClick={()=>{
+                setPatientData(false);
+              }} style={{cursor:"pointer"}} className="mb-1"/>
+              </Wrapper>
+              
+            </>}
+            {!patientData && props.mode === "patient_report"&&<>
+            <Wrapper className="d-flex flex-row align-items-center justify-content-end" width="100%">
+            
+              <ArrowDropDownIcon onClick={()=>{
+                setPatientData(true);
+              }} style={{cursor:"pointer"}} className="mb-1 mt-2 me-1"/>
+              <FullscreenIcon onClick={()=>{props.setFullScreenReport(
+                {
+                  radiologistName:props.title,
+                  radiologistEmail:props.radiologistEmail,
+                  patientName:props.patientName,
+                  patientEmail:props.patientEmail,
+                  image:props.image,
+                  report:props.description
+                }
+              );props.setOpenFullScreen(true);}} className="mb-0" style={{fontSize:"20px",cursor:"pointer"}}/>
+              </Wrapper>  
+            </>}
+            {props.mode === "patient_report" && patientData ? (
+              <>
+              <hr className="mt-0"/>
+                <Wrapper className="d-flex flex-row align-items-center justify-content-between">
+                  <Wrapper width="50%">
+                    <Wrapper className="d-flex flex-row align-items-center">
+                      <P size="14px">{props.patientName}</P>
+                    </Wrapper>
+                    <Wrapper className="d-flex flex-row align-items-center">
+                     
+                      <P size="14px">{props.patientEmail}</P>
+                    </Wrapper>
+                    <Wrapper className="d-flex flex-row align-items-center">
+                      
+                      <P size="14px">{props.radiologistEmail}</P>
+                    </Wrapper>
+                  </Wrapper>
+                  <img
+                    src={props.image}
+                    alt="patient image"
+                    width="30%"
+                    height="30%"
+                  />
+                </Wrapper>
+              </>
+            ) : null}
             {props.mode === "admin_report_gen" ? (
               <>
                 <Spacer height="20px" />
@@ -159,6 +218,7 @@ const StepsCard = (props) => {
                   <Tooltip title="Reports">
                     <VaccinesIcon
                       onClick={() => {
+                        props.setRadiologistReports(props.reports);
                         props.setOpenPatient(true);
                       }}
                       style={{ color: "#183e8f", cursor: "pointer" }}
@@ -182,7 +242,7 @@ const StepsCard = (props) => {
   );
 };
 const PatientsInfoCard = (props) => {
-  const [accordian,setAccordian]=useState(false);
+  const [accordian, setAccordian] = useState(false);
   const isResponsive = useMediaQuery({
     query: "(max-width: 453px)",
   });
@@ -204,10 +264,12 @@ const PatientsInfoCard = (props) => {
                 {props.email}
               </Card.Text>
               <Wrapper className="d-flex">
-              <div>
+                <div>
                   <Tooltip title="Read Report">
                     <AssessmentIcon
-                    onClick={()=>{setAccordian(true)}}
+                      onClick={() => {
+                        setAccordian(true);
+                      }}
                       style={{ color: "gray", cursor: "pointer" }}
                     />
                   </Tooltip>
@@ -222,21 +284,30 @@ const PatientsInfoCard = (props) => {
               </Wrapper>
             </Wrapper>
           </Card.Body>
-          
-        </div>    
-      </Card> 
-      {
-        props.mode==="accordian" && accordian?<>
-        <Card style={{boxShadow: "1px 1px 3px gray"}}>
-      <div className="d-flex flex-row align-items-center justify-content-end" style={{width:"100%"}}>
-        <ArrowDropUpIcon onClick={()=>{setAccordian(false)}} style={{cursor:"pointer"}}/>
-      </div>
-      <Card.Body>
-      <P className="mb-0" color="gray">{props.report}</P>
-      </Card.Body>
+        </div>
       </Card>
-        </>:null
-      }
+      {props.mode === "accordian" && accordian ? (
+        <>
+          <Card style={{ boxShadow: "1px 1px 3px gray" }}>
+            <div
+              className="d-flex flex-row align-items-center justify-content-end"
+              style={{ width: "100%" }}
+            >
+              <ArrowDropUpIcon
+                onClick={() => {
+                  setAccordian(false);
+                }}
+                style={{ cursor: "pointer" }}
+              />
+            </div>
+            <Card.Body>
+              <P className="mb-0" color="gray">
+                {props.report}
+              </P>
+            </Card.Body>
+          </Card>
+        </>
+      ) : null}
     </>
   );
 };

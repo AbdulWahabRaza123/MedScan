@@ -30,6 +30,7 @@ const Index = () => {
   const [radiologists,setRadiolologists]=useState([]);
   const [reports,setReports]=useState([]);
   const [openPatient,setOpenPatient]=useState(false);
+  const [radiologistReports,setRadiologistReports]=useState([]);
   const [accordian,setAccordian]=useState(false);
   const Router=useRouter();
   const { NavState, NavDispatch } = useContext(NavContext);
@@ -58,7 +59,7 @@ const Index = () => {
         const data=res.data;
         if (data.message === "done") {
           setReports(data.data);
-          console.log("These are reports ",data.data);
+          console.log("These are reports which are set ",data.data);
         } else {
         }
      
@@ -79,7 +80,6 @@ const Index = () => {
       const info=await JSON.parse(login);
       setData(info);
       NavDispatch({ type: "Nav", payload: "admin" });
-      GetRadiologists();
       GetReports();
       setMount(true);
     }
@@ -96,14 +96,14 @@ const Index = () => {
     </Wrapper>
     <Wrapper style={{maxHeight:isResponsive?"100vh":"340px",overflow:"scroll",zIndex:"0"}}>
     {
-      reports.length===0?<>
+      radiologistReports.length===0?<>
       
      <Wrapper className="d-flex flex-row align-items-center justify-content-center mb-0" height={isResponsive?"70vh":"300px"}>
           <P color="gray">No Data Found</P>
           </Wrapper>
       </>:<>
         {
-          reports.map((val,index)=>{
+          radiologistReports.map((val,index)=>{
             console.log("This is report ",val);
             return(
               <>             
@@ -114,16 +114,6 @@ const Index = () => {
         }
       </>
     }
-    {/* <PatientsInfoCard mode="accordian" name="Raza" email="raza@gmail.com"/>
-    <PatientsInfoCard mode="accordian"  name="Raza" email="raza@gmail.com"/>
-    <PatientsInfoCard mode="accordian" name="Raza" email="raza@gmail.com"/>
-    <PatientsInfoCard mode="accordian" name="Raza" email="raza@gmail.com"/>
-    <PatientsInfoCard mode="accordian" name="Raza" email="raza@gmail.com"/>
-    <PatientsInfoCard mode="accordian" name="Raza" email="raza@gmail.com"/>
-    <PatientsInfoCard mode="accordian" name="Raza" email="raza@gmail.com"/>
-    <PatientsInfoCard mode="accordian" name="Raza" email="raza@gmail.com"/>
-    <PatientsInfoCard mode="accordian" name="Raza" email="raza@gmail.com"/>
-    <PatientsInfoCard mode="accordian" name="Raza" email="raza@gmail.com"/> */}
     </Wrapper>
     </ModalComp>
       <NavbarComp name={data.name}/>
@@ -174,26 +164,29 @@ const Index = () => {
             <Spacer height="10vh" />
              
               {
-                radiologists.length<=0?
+                reports.length<=0?
                 <>
                 <Wrapper className="d-flex flex-row align-items-center justify-content-center" height="70vh">
                 <P color="gray" >Data Not Found</P>
                 </Wrapper></>:
                 <><Row className="d-flex flex-column ">
                   <Row>
-                    {radiologists.map((val, index) => {
+                    {reports.map((val, index) => {
                       return (
                         <>
                           <Col md={4} key={index}>
                             <Wrapper className="d-flex flex-row">
                               <StepsCard
                                 mode="admin_report_gen"
-                                title={val.name}
+                                title={val.radiologistName}
                                 description={val.specialization}
-                                email={val.email}
+                                email={val.radiologistEmail}
+                                reports={val.reports}
+                                radiologistReports={radiologistReports}
+                                setRadiologistReports={setRadiologistReports}
                                 openPatient={openPatient}
                                 setOpenPatient={setOpenPatient}
-                                deleteRadiologist={()=>{deleteRadiologist(val.email)}}
+                                deleteRadiologist={()=>{deleteRadiologist(val.radiologistEmail)}}
                               />
                             </Wrapper>
                           </Col>

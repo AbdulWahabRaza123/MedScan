@@ -8,6 +8,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     require: true,
   },
+  specialization: {
+    type: String,
+    required: true,
+  },
   reports: [
     {
       patientEmail: {

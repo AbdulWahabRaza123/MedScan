@@ -260,13 +260,15 @@ router.post("/GenerateReport",upload.single("file"),async(req,res)=>{
     const {patientEmail,radiologistEmail}=req.body;
     const patientData = await Patient.findOne({ email:patientEmail });
     const radiologistData=await Radiologist.findOne({email:radiologistEmail});
-    const patientReport = await Report.findOne({ 'reports.patientEmail':patientEmail });
+    const patientReport = await Report.findOne({ radiologistEmail,'reports.patientEmail':patientEmail });
+    console.log("This is patient report ",patientReport);
     const radiologistExist = await Report.findOne({ radiologistEmail });
     if(patientData && radiologistEmail &&!radiologistExist ){
       console.log("I am here ");
       const data = await new Report({
         radiologistEmail:radiologistData.email,
         radiologistName:radiologistData.name,
+        specialization:radiologistData.specialization,
         reports:[
           {
         patientEmail:patientData.email,
