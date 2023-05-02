@@ -257,7 +257,7 @@ router.post("/login", async (req, res) => {
 });
 router.post("/GenerateReport",upload.single("file"),async(req,res)=>{
   try {
-    const {patientEmail,radiologistEmail}=req.body;
+    const {patientEmail,radiologistEmail,generatedReport}=req.body;
     const patientData = await Patient.findOne({ email:patientEmail });
     const radiologistData=await Radiologist.findOne({email:radiologistEmail});
     const patientReport = await Report.findOne({ radiologistEmail,'reports.patientEmail':patientEmail });
@@ -278,13 +278,13 @@ router.post("/GenerateReport",upload.single("file"),async(req,res)=>{
           data: fs.readFileSync("uploads/temp.jpg"),
           contentType: "image/jpeg",
         },
-        report:"This is report from backend..."
+        report:generatedReport
       }
       ]
       });
       if(data){
-        const patientReport=await data.save();
-        res.status(200).json({ message: "done", report: "This is report from backend..." });
+        await data.save();
+        res.status(200).json({ message: "done", report: generatedReport });
       }else{
         res.json({ message: "error",type:"Error in database"});
       }
@@ -301,7 +301,7 @@ router.post("/GenerateReport",upload.single("file"),async(req,res)=>{
               data: fs.readFileSync("uploads/temp.jpg"),
               contentType: 'image/jpeg',
             },
-            report: 'Patient has a broken leg'
+            report: generatedReport
           }
         }
 
@@ -311,7 +311,7 @@ router.post("/GenerateReport",upload.single("file"),async(req,res)=>{
           res.json({ message: "error",type:"Error in database"});
         } else {
           console.log('Report added successfully');
-          res.status(200).json({ message: "done", report: "Patient has a broken leg" });
+          res.status(200).json({ message: "done", report:generatedReport });
         }
       });
     }
@@ -323,7 +323,7 @@ router.post("/GenerateReport",upload.single("file"),async(req,res)=>{
         },
         {
           $set: {
-            'reports.$.report': 'Patient has a broken arm',
+            'reports.$.report': generatedReport,
             'reports.$.filedata': {
               data: fs.readFileSync("uploads/temp.jpg"), // actual buffer data
               contentType: 'image/jpeg', // file type

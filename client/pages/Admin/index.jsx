@@ -104,7 +104,6 @@ const Index = () => {
       </>:<>
         {
           radiologistReports.map((val,index)=>{
-            console.log("This is report ",val);
             return(
               <>             
               <PatientsInfoCard key={index} mode="accordian" name={val.patientName} email={val.patientEmail} report={val.report}/>

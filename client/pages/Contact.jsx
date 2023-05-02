@@ -52,7 +52,7 @@ const Contact = () => {
                 <ContactCard
                   icon={ForwardToInboxIcon}
                   title="Email"
-                  content="abdulwahabraza123@gmail.com"
+                  content="medscan@gmail.com"
                 />
                 <ContactCard
                   icon={BusinessIcon}

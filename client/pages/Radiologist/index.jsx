@@ -15,6 +15,9 @@ import axios from "axios";
 import SendIcon from "@mui/icons-material/Send";
 import Button from "@mui/material/Button";
 import { useRouter } from "next/router";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import ReplayIcon from "@mui/icons-material/Replay";
+import PublishIcon from "@mui/icons-material/Publish";
 const CarouselStyle = styles.span` 
 
 `;
@@ -40,41 +43,56 @@ const Index = () => {
   const [showImage, setShowImage] = useState(null);
   const [report, setReport] = useState("Hello...");
   const { NavState, NavDispatch } = useContext(NavContext);
+  const WriteReport = async () => {
+    try {
+      if (showImage) {
+        setLoading(true);
+        const formData = new FormData();
+        formData.append("img1", showImage);
+        const res = await axios.post("http://localhost:5000/single", formData);
+        if (res.status === 200) {
+          setReport(res.data.report);
+          setLoading(false);
+        } else {
+          setLoading(false);
+          setReport("Report Error!!! Enter right email");
+        }
+      } else {
+        alert("select an image!");
+      }
+    } catch (e) {
+      setReport("Report Error!!! Enter right email");
+      setLoading(false);
+    }
+  };
   const GenerateReport = async () => {
     try {
       if (email && showImage) {
         const formData = new FormData();
         formData.append("file", showImage);
-        formData.append("patientEmail",email);
-        formData.append("radiologistEmail",data.email);
+        formData.append("patientEmail", email);
+        formData.append("radiologistEmail", data.email);
+        formData.append("generatedReport", report);
         const boundary = `----${new Date().getTime()}`;
-        const res = await axios.post(
-          "/GenerateReport",
-          formData,
-          {
-            headers: {
-              "Content-Type":`multipart/form-data; boundary=${boundary}`,
-            },
-          }
-        );
+        const res = await axios.post("/GenerateReport", formData, {
+          headers: {
+            "Content-Type": `multipart/form-data; boundary=${boundary}`,
+          },
+        });
 
         if (res.data.message === "done") {
-          setLoading(false);
-          setEmail("");
-          setReport(res.data.report);
           setDone(true);
+          alert("Report Submitted!");
         } else {
-          setLoading(false);
           setEmail("");
-          setReport("Report Error!!! Enter right email");
+          alert("Error Occured!");
         }
       } else {
         alert("Enter the email");
       }
     } catch (ex) {
-      setLoading(false);
       setEmail("");
-      setReport("Report Error!!! Enter right email");
+      alert("Error Occured!");
     }
   };
   useEffect(() => {
@@ -159,8 +177,7 @@ const Index = () => {
                         onChange={(event) => {
                           if (event.target.files[0]) {
                             setShowImage(event.target.files[0]);
-                          }
-                          else{
+                          } else {
                             alert("Upload Again!!!");
                           }
                         }}
@@ -204,8 +221,7 @@ const Index = () => {
                               endIcon={<SendIcon />}
                               sx={{ background: "#183e8f" }}
                               onClick={() => {
-                                setLoading(true);
-                                GenerateReport();
+                                WriteReport();
                               }}
                             >
                               Next
@@ -219,16 +235,45 @@ const Index = () => {
                     <Wrapper
                       className="p-3"
                       width="70%"
-                      height="25vh"
+                      height="32vh"
                       bg="black"
                       border="1px solid gray"
                       color="white"
                       borderRadius="15px"
                     >
+                      {!loading && report && (
+                        <>
+                          <Wrapper className="d-flex flex-row align-items-center justify-content-end mb-3">
+                            <ContentCopyIcon
+                              className="me-2"
+                              style={{ fontSize: "16px", cursor: "pointer" }}
+                            />
+                            <ReplayIcon
+                              onClick={() => {
+                                WriteReport();
+                              }}
+                              style={{ fontSize: "16px", cursor: "pointer" }}
+                            />
+                          </Wrapper>
+                        </>
+                      )}
                       <P className="mb-0" size="12px">
                         {!loading ? report : "Loading..."}
                       </P>
                     </Wrapper>
+                    {!loading && report !== "Hello..." && (
+                      <Button
+                        className="mt-3 ms-2"
+                        variant="contained"
+                        endIcon={<PublishIcon />}
+                        sx={{ background: "#183e8f" }}
+                        onClick={() => {
+                          GenerateReport();
+                        }}
+                      >
+                        Submit
+                      </Button>
+                    )}
                   </Col>
                 </Row>
               </Wrapper>

@@ -128,6 +128,7 @@ const Index = () => {
       } else {
         setUserData([]);
         setGotReport(false);
+        console.log("Reports not found....");
         // alert("Data not found");
         // Router.push("/User/Logout");
       }
@@ -186,9 +187,11 @@ const Index = () => {
               <Wrapper className="mt-4">
                 <Spacer height="10vh" />
 
-                {gotReport ? (
+                {gotReport&&userData.length>0 ? (
+                  
                   <>
                     {!openFullScreen && (
+                    
                       <>
                         <Row style={{ height: "70vh", overflow: "scroll" }}>
                           {Array.isArray(userData) &&
