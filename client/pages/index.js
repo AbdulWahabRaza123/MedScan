@@ -9,6 +9,8 @@ import { Wrapper } from "../Components/Layout";
 import { StepsCard } from "../Components/Card";
 import Footer from "../Components/Footer";
 import Loading from "../Components/Loading";
+import { ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 const CarouselStyle = styles.div` 
 margin-top:4.3%;
 margin-bottom:8%;
@@ -76,7 +78,20 @@ const Home = () => {
   }, []);
   return mount ? (
     <>
+     
       <NavbarComp title="Home" />
+      <ToastContainer
+        className="set_notify"
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <CarouselStyle>
         <Carousel
           dynamicHeight={false}

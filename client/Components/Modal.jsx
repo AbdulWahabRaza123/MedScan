@@ -1,7 +1,12 @@
 import React,{useState} from 'react';
+import { ImageComp } from './Layout';
 import Modal from "@mui/material/Modal";
 import CloseIcon from "@mui/icons-material/Close";
 import Box from "@mui/material/Box";
+const NavLogoStyle = {
+  width: "70px",
+  height: "70px",
+};
 const ModalComp = (props) => {
     // const [open, setOpen] = useState(false);
     // const handleOpen = () => setOpen(true);
@@ -37,9 +42,14 @@ const ModalComp = (props) => {
               
             }}
           >
-            <div >
+            {/* <div >
               <h3>{props.heading}</h3>
-            </div>
+            </div> */}
+            <ImageComp
+                src="/assets/logo.png"
+                style={NavLogoStyle}
+                fluid={true}
+              />
           
             <CloseIcon
               style={{ cursor: "pointer", fontSize: "40px" }}

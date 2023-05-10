@@ -15,6 +15,8 @@ import { Spacer } from "../../Components/Spacer";
 import ModalComp from "../../Components/Modal";
 import SearchIcon from '@mui/icons-material/Search';
 import axios from "axios";
+import { ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 const CarouselStyle = styles.span` 
 `;
 const ImageStyle = {
@@ -59,12 +61,12 @@ const Index = () => {
         const data=res.data;
         if (data.message === "done") {
           setReports(data.data);
-          console.log("These are reports which are set ",data.data);
+         
         } else {
         }
      
     } catch (e) {
-    console.log("This is error ",e);
+  
     }
   };
   const deleteRadiologist=(email)=>{
@@ -88,6 +90,7 @@ const Index = () => {
   }, []);
   return mount ? (
     <>
+    
     <ModalComp className={isResponsive?"p-1":""} heading="Patients" width={isResponsive?"100%":"450px"} height={isResponsive?"100vh":"70%"} open={openPatient} handleClose={()=>{setOpenPatient(false)}}>
     <Spacer className="mt-2"/>
     <Wrapper style={{position:"relative",zIndex:"1"}}>
@@ -116,6 +119,18 @@ const Index = () => {
     </Wrapper>
     </ModalComp>
       <NavbarComp name={data.name}/>
+      <ToastContainer
+        className="set_notify"
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <Container style={{ marginTop: "20vh" }}>
         <Row className="pb-5">
           <Col sm={6} md={6}>

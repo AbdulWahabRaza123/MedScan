@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { Spacer } from "./Spacer";
-import { Row, Col, Wrapper, useMediaQuery } from "./Layout";
+import { Row, Col, Wrapper, useMediaQuery, ImageComp } from "./Layout";
 import { P } from "./Typography";
 import MaterialCard from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -17,8 +17,8 @@ import Tooltip from "@mui/material/Tooltip";
 import VaccinesIcon from "@mui/icons-material/Vaccines";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import AssessmentIcon from "@mui/icons-material/Assessment";
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import CloseIcon from "@mui/icons-material/Close";
 const ContactCard = (props) => {
   return (
@@ -37,7 +37,10 @@ const ContactCard = (props) => {
     </>
   );
 };
-
+const NavLogoStyle = {
+  width: "70px",
+  height: "70px",
+};
 const CardComp = (props) => {
   const Router = useRouter();
   const [open, setOpen] = useState(false);
@@ -68,12 +71,18 @@ const CardComp = (props) => {
             style={{
               display: "flex",
               flexDirection: "row",
+              alignContent: "end",
               justifyContent: "space-between",
             }}
           >
-            <div>
-              <h2>{props.heading}</h2>
-            </div>
+            <ImageComp
+              src="/assets/logo.png"
+              style={NavLogoStyle}
+              fluid={true}
+            />
+            {/* <div>
+              <h2 style={{letterSpacing:"5px",color:"gray"}}>{props.heading}</h2>
+            </div> */}
             <CloseIcon
               style={{ cursor: "pointer", fontSize: "40px" }}
               onClick={handleClose}
@@ -133,7 +142,6 @@ const StepsCard = (props) => {
           height: "auto",
           overflow: "auto",
           boxShadow: "5px 5px 10px gray",
-          
         }}
       >
         <div
@@ -152,53 +160,82 @@ const StepsCard = (props) => {
               height="120px"
             />
           ) : null}
-          <Card.Body >
-          
+          <Card.Body>
             <Card.Title style={{ color: "#183e8f", fontWeight: "600" }}>
               {props.title}
-             
             </Card.Title>
-            <Card.Text className="mb-0" style={{ color: "gray" }}>{props.description}</Card.Text>
-            {patientData && props.mode === "patient_report"&&<>
-            <Wrapper className="d-flex flex-row align-items-center justify-content-end mt-2" width="100%">
-              <ArrowDropUpIcon onClick={()=>{
-                setPatientData(false);
-              }} style={{cursor:"pointer"}} className="mb-1"/>
-              </Wrapper>
-              
-            </>}
-            {!patientData && props.mode === "patient_report"&&<>
-            <Wrapper className="d-flex flex-row align-items-center justify-content-end" width="100%">
-            
-              <ArrowDropDownIcon onClick={()=>{
-                setPatientData(true);
-              }} style={{cursor:"pointer"}} className="mb-1 mt-2 me-1"/>
-              <FullscreenIcon onClick={()=>{props.setFullScreenReport(
-                {
-                  radiologistName:props.title,
-                  radiologistEmail:props.radiologistEmail,
-                  patientName:props.patientName,
-                  patientEmail:props.patientEmail,
-                  image:props.image,
-                  report:props.description
-                }
-              );props.setOpenFullScreen(true);}} className="mb-0" style={{fontSize:"20px",cursor:"pointer"}}/>
-              </Wrapper>  
-            </>}
+            <Card.Text
+              className="mb-0"
+              style={{
+                color: "gray",
+                
+                height:"50px",
+                overflow:"hidden",
+                textOverflow: "ellipsis",
+                
+              }}
+            >
+              {props.description}
+            </Card.Text>
+            {patientData && props.mode === "patient_report" && (
+              <>
+                <Wrapper
+                  className="d-flex flex-row align-items-center justify-content-end mt-2"
+                  width="100%"
+                >
+                  <ArrowDropUpIcon
+                    onClick={() => {
+                      setPatientData(false);
+                    }}
+                    style={{ cursor: "pointer" }}
+                    className="mb-1"
+                  />
+                </Wrapper>
+              </>
+            )}
+            {!patientData && props.mode === "patient_report" && (
+              <>
+                <Wrapper
+                  className="d-flex flex-row align-items-center justify-content-end"
+                  width="100%"
+                >
+                  <ArrowDropDownIcon
+                    onClick={() => {
+                      setPatientData(true);
+                    }}
+                    style={{ cursor: "pointer" }}
+                    className="mb-1 mt-2 me-1"
+                  />
+                  <FullscreenIcon
+                    onClick={() => {
+                      props.setFullScreenReport({
+                        radiologistName: props.title,
+                        radiologistEmail: props.radiologistEmail,
+                        patientName: props.patientName,
+                        patientEmail: props.patientEmail,
+                        image: props.image,
+                        report: props.description,
+                      });
+                      props.setOpenFullScreen(true);
+                    }}
+                    className="mb-0"
+                    style={{ fontSize: "20px", cursor: "pointer" }}
+                  />
+                </Wrapper>
+              </>
+            )}
             {props.mode === "patient_report" && patientData ? (
               <>
-              <hr className="mt-0"/>
+                <hr className="mt-0" />
                 <Wrapper className="d-flex flex-row align-items-center justify-content-between">
                   <Wrapper width="50%">
                     <Wrapper className="d-flex flex-row align-items-center">
                       <P size="14px">{props.patientName}</P>
                     </Wrapper>
                     <Wrapper className="d-flex flex-row align-items-center">
-                     
                       <P size="14px">{props.patientEmail}</P>
                     </Wrapper>
                     <Wrapper className="d-flex flex-row align-items-center">
-                      
                       <P size="14px">{props.radiologistEmail}</P>
                     </Wrapper>
                   </Wrapper>

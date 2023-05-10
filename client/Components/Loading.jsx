@@ -1,13 +1,13 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
-const Loading = () => {
+const Loading = (props) => {
   return (
     <>
       <div
         style={{
           display: "flex",
-          marginTop: "50vh",
+          marginTop: props?.top?"":"50vh",
           justifyContent: "center",
           alignItems: "center",
         }}

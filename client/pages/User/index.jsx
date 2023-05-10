@@ -14,6 +14,8 @@ import CardComp from "../../Components/Card";
 import Loading from "../../Components/Loading";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import styles from "styled-components";
+import { ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 const CarouselStyle = styles.span` 
 
 `;
@@ -58,7 +60,7 @@ const Index = () => {
     const data = await res.json();
     if (data.message === "done") {
     } else {
-      console.log("Data not found");
+      
     }
   };
   useEffect(() => {
@@ -123,14 +125,12 @@ const Index = () => {
           setGotReport(true);
         } else {
           setUserData([]);
-          alert("Data not found");
+         
         }
       } else {
         setUserData([]);
         setGotReport(false);
-        console.log("Reports not found....");
-        // alert("Data not found");
-        // Router.push("/User/Logout");
+        
       }
     } catch (e) {
       setUserData([]);
@@ -143,11 +143,20 @@ const Index = () => {
       getPatientReport(data.email);
     }
   }, [data]);
-  useEffect(() => {
-    console.log("This is user data ", userData.length);
-  }, [userData]);
   return mount ? (
     <>
+      <ToastContainer
+        className="set_notify"
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <NavbarComp name={data.name} />
       <Container style={{ marginTop: "20vh" }}>
         <Row className="pb-5">

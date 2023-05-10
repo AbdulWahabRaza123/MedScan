@@ -1,6 +1,14 @@
 import React, { useState, useEffect, useContext } from "react";
 import { NavContext } from "../_app";
-import { Container, Row, Col, Wrapper } from "../../Components/Layout";
+import {
+  Container,
+  Row,
+  Col,
+  Wrapper,
+  useMediaQuery,
+  ImageComp
+} from "../../Components/Layout";
+import { toast } from "react-toastify";
 import Footer from "../../Components/Footer";
 import NavbarComp from "../../Components/Navbar";
 import { Carousel } from "react-responsive-carousel";
@@ -18,6 +26,15 @@ import { useRouter } from "next/router";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ReplayIcon from "@mui/icons-material/Replay";
 import PublishIcon from "@mui/icons-material/Publish";
+import ModalComp from "../../Components/Modal";
+import styled from "styled-components";
+import Tooltip from '@mui/material/Tooltip';
+import UploadIcon from "@mui/icons-material/Upload";
+import IconButton from "@mui/material/IconButton";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import DoneIcon from "@mui/icons-material/Done";
+import DoneAllIcon from '@mui/icons-material/DoneAll';
+import { ToastContainer } from "react-toastify";
 const CarouselStyle = styles.span` 
 
 `;
@@ -42,7 +59,20 @@ const Index = () => {
   const regex = new RegExp("[a-z]*[0-9]*.@gmail.com");
   const [showImage, setShowImage] = useState(null);
   const [report, setReport] = useState("Hello...");
+  const [allDoneLoading,setAllDoneLoading]=useState(false);
   const { NavState, NavDispatch } = useContext(NavContext);
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const isResponsive = useMediaQuery({
+    query: "(max-width: 453px)",
+  });
+  const GrayBackground = styled.div`
+    background: ${showImage ? "black" : "gray"};
+    width: ${isResponsive ? "90%" : "30%"};
+    height: 448px;
+    borderradius: 10px;
+  `;
   const WriteReport = async () => {
     try {
       if (showImage) {
@@ -53,21 +83,62 @@ const Index = () => {
         if (res.status === 200) {
           setReport(res.data.report);
           setLoading(false);
+          toast.success("Report Succesfully Generated!", {
+            className: "set_notify",
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
         } else {
           setLoading(false);
           setReport("Report Error!!! Enter right email");
+          toast.error("Report Error!, Enter right email", {
+            className: "set_notify",
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
         }
       } else {
-        alert("select an image!");
+        // alert("select an image!");
+        toast.error("select an image!", {
+          className: "set_notify",
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
     } catch (e) {
       setReport("Report Error!!! Enter right email");
       setLoading(false);
+      toast.error("Report Error!, Enter right email", {
+        className: "set_notify",
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
   const GenerateReport = async () => {
     try {
       if (email && showImage) {
+        setAllDoneLoading(true);
         const formData = new FormData();
         formData.append("file", showImage);
         formData.append("patientEmail", email);
@@ -82,17 +153,61 @@ const Index = () => {
 
         if (res.data.message === "done") {
           setDone(true);
-          alert("Report Submitted!");
+          setAllDoneLoading(false);
+          // alert("Report Submitted!");
+          toast.success("Report Succesfully Submit!", {
+            className: "set_notify",
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
         } else {
-          setEmail("");
-          alert("Error Occured!");
+          // setEmail("");
+          setAllDoneLoading(false);
+          // alert("Error Occured!");
+          toast.error("Error!!!", {
+            className: "set_notify",
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
         }
       } else {
-        alert("Enter the email");
+        // alert("Enter the email");
+        setAllDoneLoading(false);
+        toast.error("Error!!", {
+          className: "set_notify",
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
     } catch (ex) {
-      setEmail("");
-      alert("Error Occured!");
+      // setEmail("");
+      // alert("Error Occured!");
+      setAllDoneLoading(false);
+      toast.error("Error!", {
+        className: "set_notify",
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
   useEffect(() => {
@@ -112,6 +227,119 @@ const Index = () => {
   }, []);
   return mount ? (
     <>
+       <ToastContainer
+        className="set_notify"
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      <ModalComp
+        open={open}
+        handleOpen={handleOpen}
+        handleClose={handleClose}
+        heading="Report"
+        width={isResponsive ? "100%" : "60%"}
+        maxHeight={isResponsive?null:"100vh"}
+        height={isResponsive?"100vh":null}
+      >
+        {loading ? (
+          <>
+            <Loading top={true} />
+          </>
+        ) : (
+          <>
+            <Spacer height="50px" />
+            <Wrapper className="d-flex flex-row justify-content-between flex-wrap">
+            <Wrapper className="mt-2">
+            <Wrapper className="d-flex flex-row align-items-end mb-4">
+                      <Form.Control
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                        }}
+                        className={isResponsive?"ms-2":""}
+                        value={email}
+                        type="email"
+                        placeholder="Enter email"
+                        style={{ width: "100%" }}
+                      />
+                      {regex.test(email) ? (
+                      <Tooltip title="submit">
+                      <DoneAllIcon onClick={()=>{
+                        GenerateReport();
+                        }} className="ms-3" style={{cursor:"pointer",fontSize:"25px",color:allDoneLoading?"gray":"green"}}/>
+                      </Tooltip>
+                      ):null}
+                      </Wrapper>
+                    {
+                      isResponsive?<Spacer height="20px"/>:null
+                    }
+                    {
+                      !isResponsive?<>
+                      <ul style={{color:"gray",fontSize:"14px"}}>
+                      <li>Now report is generated, so enter email first.</li>
+                      <li>Done button will be visible once email validate.</li>
+                      <li>Press done button if done button is visibile.</li>
+                      <li>Now report is submitted.</li>
+                      <li>Generate new report, if you get sucessfully notify.</li>
+                    </ul>
+                      </>:null
+                    }
+                    
+                    
+
+                    </Wrapper>
+            <Wrapper
+              className="p-3"
+              width={isResponsive?"100%":"50%"}
+              height="32vh"
+              bg="black"
+              border="1px solid gray"
+              color="white"
+              borderRadius="15px"
+            >
+              {!loading && report && (
+                <>
+                  <Wrapper className="d-flex flex-row align-items-center justify-content-end mb-3">
+                    <ContentCopyIcon
+                      className="me-2"
+                      style={{ fontSize: "16px", cursor: "pointer" }}
+                    />
+                    <ReplayIcon
+                      onClick={() => {
+                        WriteReport();
+                      }}
+                      style={{ fontSize: "16px", cursor: "pointer" }}
+                    />
+                  </Wrapper>
+                </>
+              )}
+              <P className="mb-0" size="12px">
+                {!loading ? report : "Loading..."}
+              </P>
+            </Wrapper>
+           
+            {
+                      isResponsive?<>
+                      <ul className="mt-5" style={{color:"gray",fontSize:"14px"}}>
+                      <li>Now report is generated, so enter email first.</li>
+                      <li>Done button will be visible once email validate.</li>
+                      <li>Press done button if done button is visibile.</li>
+                      <li>Now report is submitted.</li>
+                      <li>Generate new report, if you get sucessfully notify.</li>
+                    </ul>
+                      </>:null
+                    }
+            </Wrapper>
+            <Spacer height="50px" />
+          </>
+        )}
+      </ModalComp>
       <NavbarComp name={data.name} />
       <Container style={{ marginTop: "20vh" }}>
         <Row className="pb-5">
@@ -150,7 +378,72 @@ const Index = () => {
             <CardComp width="100%" height="100%" heading="Radiologist">
               <Wrapper>
                 <Spacer height="10vh" />
-                <Row>
+                <Wrapper className="d-flex flex-row align-items-center justify-content-center">
+                  <GrayBackground className="rounded-3">
+                    <Wrapper className="ms-2 mt-2 d-flex flex-row align-items-center justify-content-start">
+                      {!showImage && (
+                        <Tooltip title="upload">
+                        <IconButton
+                          color="standard"
+                          aria-label="upload picture"
+                          component="label"
+                          style={{ cursor: "pointer" }}
+                        >
+                          <input
+                            hidden
+                            accept="image/*"
+                            type="file"
+                            onChange={(event) => {
+                              if (event.target.files[0]) {
+                                setShowImage(event.target.files[0]);
+                              } else {
+                                alert("Upload Again!!!");
+                              }
+                            }}
+                          />
+                          <UploadIcon />
+                        </IconButton>
+                        </Tooltip>
+                      )}
+                      {showImage && (
+                        <Wrapper
+                          width="100%"
+                          className="d-flex flex-row align-items-center justify-content-between ms-2 me-2 mt-2 mb-2"
+                        >
+                        <Tooltip title="done">
+                          <DoneIcon
+                            className="text-white"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                              setOpen(true);
+                              WriteReport();
+                            }}
+                          />
+                          </Tooltip>
+                          <Tooltip title="delete">
+                          <DeleteForeverIcon
+                            className="text-danger"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                              setShowImage(null);
+                            }}
+                          />
+                          </Tooltip>
+                        </Wrapper>
+                      )}
+                    </Wrapper>
+                    {showImage && (
+                      <img
+                        alt="not found"
+                        width={"100%"}
+                        height="400px"
+                        // style={{ border: "1px solid black" }}
+                        src={URL.createObjectURL(showImage)}
+                      />
+                    )}
+                  </GrayBackground>
+                </Wrapper>
+                <Row className="d-none">
                   <Col md={4}>
                     {/* Input */}
                     <Wrapper className="mb-4">

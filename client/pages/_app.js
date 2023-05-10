@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useReducer, createContext } from "react";
 import { NavReducer, initialStateNav } from "../Components/Reducer/NavReducer";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import 'react-toastify/dist/ReactToastify.css';
 const NavContext = createContext();
 function MyApp({ Component, pageProps }) {
   const [NavState, NavDispatch] = useReducer(NavReducer, initialStateNav);

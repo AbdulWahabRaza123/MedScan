@@ -9,7 +9,8 @@ import Loading from "../Components/Loading";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Footer from "../Components/Footer";
-
+import { ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 const Login = () => {
   const Route = useRouter();
   const [mount, setMount] = useState(false);
@@ -40,7 +41,17 @@ const Login = () => {
       const data = await res.json();
       
       if (data.message === "error") {
-        alert("Wrong Credentials");
+        // alert("Wrong Credentials");
+        toast.error("Error!", {
+          className: "set_notify",
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       } else {
       
             const store=JSON.stringify({
@@ -51,17 +62,46 @@ const Login = () => {
                 token:data.token 
             });
         if(data.mode==="user"){
-          alert("User login successful");
+          // alert("User login successful");
+          toast.success("User login successfully!", {
+            className: "set_notify",
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
           localStorage.setItem("login", store);
           Route.push("/User");
         }
         else if(data.mode==="radiologist"){
-          alert("Radiologist login successful");
+          toast.success("Radiologist login successfully!", {
+            className: "set_notify",
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
           localStorage.setItem("login", store);
           Route.push("/Radiologist");
         }
         else if(data.mode==="admin"){
-        alert("Admin login successful");
+        // alert("Admin login successful");
+        toast.success("Admin login successfully!", {
+          className: "set_notify",
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         localStorage.setItem("login",store);
         Route.push("/Admin");
         }
@@ -82,6 +122,18 @@ const Login = () => {
   return mount ? (
     <>
       <NavbarComp title="Login" />
+      <ToastContainer
+        className="set_notify"
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <h1
         className="text-center mb-5"
         style={{ marginTop: "20vh", color: "#183e8f", fontWeight: "600" }}
