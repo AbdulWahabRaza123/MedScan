@@ -21,7 +21,7 @@ const ModalComp = (props) => {
       boxShadow: 24,
       maxHeight: props.maxHeight,
       height:props.height,
-      // overflow: "scroll",
+      overflow: "scroll",
       p: 2,
     };
   return (

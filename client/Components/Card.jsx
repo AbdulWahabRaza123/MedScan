@@ -168,11 +168,9 @@ const StepsCard = (props) => {
               className="mb-0"
               style={{
                 color: "gray",
-                
                 height:"50px",
                 overflow:"hidden",
                 textOverflow: "ellipsis",
-                
               }}
             >
               {props.description}
