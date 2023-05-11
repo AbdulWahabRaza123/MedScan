@@ -124,7 +124,7 @@ router.post("/registerPatient", async (req, res) => {
   }
 });
 // Register Radiologist
-router.post("/registerRadiologist", async (req, res) => {
+router.post("/registerRadiologist",authAdmin, async (req, res) => {
   try {
     const { name, email,specialization, password, cPassword } = req.body;
     if (!name || !email ||!specialization|| !password || !cPassword) {
@@ -410,13 +410,21 @@ router.get("/getReports",authAdmin,async(req,res)=>{
  })
 router.get("/getRadiologists",authAdmin,async(req,res)=>{
   try{
-const radiologists=await Radiologist.find();
+const radiologists=await Radiologist.find().select("name email specialization");
 if(radiologists){
-let customRadio=[];
-for(let i=0;i<radiologists.length;i++){
-  customRadio.push({name:radiologists[i].name,email:radiologists[i].email,specialization:radiologists[i].specialization})
+res.status(200).json({message:"done",data:radiologists});
+}else{
+  res.status(404).json({ message: "error",type:"Data not found"});
 }
-res.status(200).json({message:"done",data:customRadio});
+  }catch(e){
+    res.status(404).json({ message: "error",type:"Data not found"});
+  }
+})
+router.get("/getPatients",authAdmin,async(req,res)=>{
+  try{
+const patients=await Patient.find().select("name email");
+if(patients){
+res.status(200).json({message:"done",data:patients});
 }else{
   res.status(404).json({ message: "error",type:"Data not found"});
 }

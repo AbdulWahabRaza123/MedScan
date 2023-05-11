@@ -195,8 +195,6 @@ const Index = () => {
         });
       }
     } catch (ex) {
-      // setEmail("");
-      // alert("Error Occured!");
       setAllDoneLoading(false);
       toast.error("Error!", {
         className: "set_notify",
