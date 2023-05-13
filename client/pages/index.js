@@ -33,7 +33,8 @@ const Section2 = styles.div`
 const StepsCardData = [
   {
     title: "Login the system",
-    description: "Click on login button and fill information if you are already registered else register yourself.",
+    description:
+      "Click on login button and fill information if you are already registered else register yourself.",
     color: "primary",
   },
   {
@@ -44,7 +45,7 @@ const StepsCardData = [
   },
   {
     title: "Enjoy",
-    description: "Now get benafit of automated system.",
+    description: "Now get benefit of automated system.",
     color: "info",
   },
 ];
@@ -78,7 +79,6 @@ const Home = () => {
   }, []);
   return mount ? (
     <>
-     
       <NavbarComp title="Home" />
       <ToastContainer
         className="set_notify"

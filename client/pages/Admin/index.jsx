@@ -167,7 +167,7 @@ const Index = () => {
           )}
         </Wrapper>
       </ModalComp>
-      <NavbarComp name={data.name} />
+      <NavbarComp name={"Admin"} />
       <ToastContainer
         className="set_notify"
         position="top-center"

@@ -157,7 +157,7 @@ const Index = () => {
         draggable
         pauseOnHover
       />
-      <NavbarComp name={data.name} />
+      <NavbarComp name="Patient" />
       <Container style={{ marginTop: "20vh" }}>
         <Row className="pb-5">
           <Col sm={6} md={6}>

@@ -338,7 +338,7 @@ const Index = () => {
           </>
         )}
       </ModalComp>
-      <NavbarComp name={data.name} />
+      <NavbarComp name="Radiologist" />
       <Container style={{ marginTop: "20vh" }}>
         <Row className="pb-5">
           <Col sm={6} md={6}>
