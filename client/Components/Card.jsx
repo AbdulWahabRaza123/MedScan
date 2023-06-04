@@ -19,8 +19,8 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 
-import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
-import MasksIcon from '@mui/icons-material/Masks';
+import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
+import MasksIcon from "@mui/icons-material/Masks";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import CloseIcon from "@mui/icons-material/Close";
 const ContactCard = (props) => {
@@ -83,7 +83,7 @@ const CardComp = (props) => {
               style={NavLogoStyle}
               fluid={true}
             />
-       
+
             {/* <div>
               <h2 style={{letterSpacing:"5px",color:"gray"}}>{props.heading}</h2>
             </div> */}
@@ -150,12 +150,16 @@ const StepsCard = (props) => {
       >
         <div
           className={
-            props.mode === "admin_report_gen" ||props.mode === "admin_radio"||props.mode === "admin_patient"
+            props.mode === "admin_report_gen" ||
+            props.mode === "admin_radio" ||
+            props.mode === "admin_patient"
               ? "ps-2 d-flex flex-row align-items-center"
               : ""
           }
         >
-          {props.mode === "admin_report_gen"||props.mode === "admin_radio"||props.mode === "admin_patient"&& !isResponsive ? (
+          {props.mode === "admin_report_gen" ||
+          props.mode === "admin_radio" ||
+          (props.mode === "admin_patient" && !isResponsive) ? (
             <img
               className="img-fluid"
               src="/assets/profile.jpg"
@@ -172,8 +176,8 @@ const StepsCard = (props) => {
               className="mb-0"
               style={{
                 color: "gray",
-                height:"25px",
-                overflow:"hidden",
+                height: "25px",
+                overflow: "hidden",
                 textOverflow: "ellipsis",
               }}
             >
@@ -250,26 +254,31 @@ const StepsCard = (props) => {
                 </Wrapper>
               </>
             ) : null}
-            {props.mode === "admin_report_gen"||props.mode === "admin_radio"||props.mode === "admin_patient" ? (
+            {props.mode === "admin_report_gen" ||
+            props.mode === "admin_radio" ||
+            props.mode === "admin_patient" ? (
               <>
                 <Spacer height="20px" />
                 <Wrapper className="d-flex flex-row">
-                {
-                  props.mode === "admin_report_gen"&&<Tooltip title="Reports">
-                    <VaccinesIcon
-                      onClick={() => {
-                        props.setRadiologistReports(props.reports);
-                        props.setOpenPatient(true);
-                      }}
-                      style={{ color: "#183e8f", cursor: "pointer" }}
-                    />
-                  </Tooltip>
-                }
-                  
-                
-                  
+                  {props.mode === "admin_report_gen" && (
+                    <Tooltip title="Reports">
+                      <VaccinesIcon
+                        onClick={() => {
+                          props.setRadiologistReports(props.reports);
+                          props.setOpenPatient(true);
+                        }}
+                        style={{ color: "#183e8f", cursor: "pointer" }}
+                      />
+                    </Tooltip>
+                  )}
+
                   <div onClick={props.deleteRadiologist}>
-                    <Tooltip className={props.mode === "admin_report_gen"?"me-3":""} title="Delete">
+                    <Tooltip
+                      className={
+                        props.mode === "admin_report_gen" ? "me-3" : ""
+                      }
+                      title="Delete"
+                    >
                       <DeleteOutlineIcon
                         className="pt-1"
                         style={{ color: "#183e8f", cursor: "pointer" }}

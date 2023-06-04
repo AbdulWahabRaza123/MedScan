@@ -1,6 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 const app = express();
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
@@ -9,6 +10,14 @@ app.use(
     extended: true,
   })
 );
+var transporter = nodemailer.createTransport({
+  service: "gmail",
+  secure: "false",
+  auth: {
+    user: process.env.email,
+    pass: process.env.password,
+  },
+});
 const multer = require("multer");
 const fs = require("fs");
 app.use(cookieParser());
@@ -64,21 +73,17 @@ router.post("/registerAdmin", async (req, res) => {
         });
         if (admin) {
           const data = await admin.save();
-          res
-            .status(200)
-            .json({
-              message: "done",
-              type: "successfully registration",
-              mode: "admin",
-            });
+          res.status(200).json({
+            message: "done",
+            type: "successfully registration",
+            mode: "admin",
+          });
         } else {
-          res
-            .status(401)
-            .json({
-              message: "error",
-              type: "error in storing data",
-              mode: "admin",
-            });
+          res.status(401).json({
+            message: "error",
+            type: "error in storing data",
+            mode: "admin",
+          });
         }
       } else {
         res.json({
@@ -131,21 +136,17 @@ router.post("/registerPatient", async (req, res) => {
           console.log("This is data ");
           const data = await patient.save();
 
-          res
-            .status(200)
-            .json({
-              message: "done",
-              type: "successfully registration",
-              mode: "patient",
-            });
+          res.status(200).json({
+            message: "done",
+            type: "successfully registration",
+            mode: "patient",
+          });
         } else {
-          res
-            .status(401)
-            .json({
-              message: "error",
-              type: "error in storing data",
-              mode: "patient",
-            });
+          res.status(401).json({
+            message: "error",
+            type: "error in storing data",
+            mode: "patient",
+          });
         }
       } else {
         res.json({
@@ -207,21 +208,17 @@ router.post("/registerRadiologist", authAdmin, async (req, res) => {
               //  console.log("This is radiologist ",radiologist);
               const data = await radiologist.save();
 
-              res
-                .status(200)
-                .json({
-                  message: "done",
-                  type: "successfully registration",
-                  mode: "radiologist",
-                });
+              res.status(200).json({
+                message: "done",
+                type: "successfully registration",
+                mode: "radiologist",
+              });
             } else {
-              res
-                .status(401)
-                .json({
-                  message: "error",
-                  type: "error in storing data",
-                  mode: "radiologist",
-                });
+              res.status(401).json({
+                message: "error",
+                type: "error in storing data",
+                mode: "radiologist",
+              });
             }
           } else {
             res.json({
@@ -297,6 +294,19 @@ router.post("/login", async (req, res) => {
           const token = await admin.generateAuthToken();
 
           if (matchPassword) {
+            var mailOptions = {
+              from: process.env.email,
+              to: process.env.email,
+              subject: "Login Attempt",
+              text: "Someone Try to Login Your Account!",
+            };
+            transporter.sendMail(mailOptions, function (error, info) {
+              if (error) {
+                console.log(error);
+              } else {
+                console.log("Email sent: " + info.response);
+              }
+            });
             res
               .cookie("jwToken", token, {
                 key: "admin",
