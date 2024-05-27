@@ -1,6 +1,6 @@
 This repository houses the core user interface and backend functionalities of the medical report generation system.
 
-#Technologies:
+Technologies:
 
 Frontend: Next.js, React Bootstrap, Bootstrap, Styled Components
 Backend: Express.js, MongoDB
